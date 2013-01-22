@@ -17,7 +17,7 @@ class MaxClient(object):
     def setActor(self, actor, type='person'):
         self.actor = actor and dict(objectType='person', username=actor) or None
 
-    def setOAuth2Auth(self, oauth2_token, oauth2_grant_type='password', oauth2_scope='pythoncli'):
+    def setOAuth2Auth(self, oauth2_token, oauth2_grant_type='password', oauth2_scope='widgetcli'):
         """
         """
         self.token = oauth2_token
@@ -240,6 +240,16 @@ class MaxClient(object):
     # def unsubscribe(self,username,url,otype='service'):
     #     """
     #     """
+
+    def subscribed(self):
+        """
+        """
+        route = ROUTES['subscriptions']
+
+        rest_params = dict(username=self.actor['username'])
+
+        (success, code, response) = self.GET(route % rest_params)
+        return response
 
     def examplePOSTCall(self, username):
         """

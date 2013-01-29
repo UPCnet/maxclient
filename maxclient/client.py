@@ -2,22 +2,52 @@ import requests
 import json
 import urllib
 from resources import ROUTES
+import getpass
+
+DEFAULT_MAX_SERVER = 'http://localhost'
+DEFAULT_OAUTH_SERVER = 'https://oauth.upc.edu'
 
 
 class MaxClient(object):
 
-    def __init__(self, url, actor=None, auth_method='basic'):
+    def __init__(self, url=DEFAULT_MAX_SERVER, oauth_server=DEFAULT_OAUTH_SERVER, actor=None, auth_method='oauth2'):
         """
         """
         #Strip ending slashes, as all routes begin with a slash
         self.url = url.rstrip('/')
+        self.oauth_server = oauth_server.rstrip('/')
         self.setActor(actor)
         self.auth_method = auth_method
+
+    def login(self, username='', password=False):
+        if not username:
+            username = raw_input("Username: ")
+        if not password:
+            password = getpass.getpass()
+
+        self.setActor(username)
+        return self.getToken(username, password)
+
+    def getToken(self, username, password):
+        payload = {"grant_type": 'password',
+           "client_id": 'MAX',
+           "scope": 'widgetcli',
+           "username": username,
+           "password": password
+           }
+
+        req = requests.post('{0}/token'.format(self.oauth_server), data=payload, verify=False)
+        response = json.loads(req.text)
+        if req.status_code == 200:
+            self.token = response.get("oauth_token")
+            return self.token
+        else:
+            raise AttributeError("Bad username or password.")
 
     def setActor(self, actor, type='person'):
         self.actor = actor and dict(objectType='person', username=actor) or None
 
-    def setOAuth2Auth(self, oauth2_token, oauth2_grant_type='password', oauth2_scope='widgetcli'):
+    def setToken(self, oauth2_token, oauth2_grant_type='password', oauth2_scope='widgetcli'):
         """
         """
         self.token = oauth2_token
@@ -128,25 +158,25 @@ class MaxClient(object):
     def addUser(self, username, **kwargs):
         """
         """
-        route = ROUTES['user']
+        route = ROUTES['user']['route']
 
         query = {}
         rest_params = dict(username=username)
         valid_properties = ['displayName']
         query = dict([(k, v) for k, v in kwargs.items() if k in valid_properties])
 
-        (success, code, response) = self.POST(route % (rest_params), query)
+        (success, code, response) = self.POST(route.format(**rest_params), query)
         return response
 
     def modifyUser(self, username, properties):
         """
         """
-        route = ROUTES['user']
+        route = ROUTES['user']['route']
 
         query = properties
         rest_params = dict(username=username)
 
-        (success, code, response) = self.PUT(route % (rest_params), query)
+        (success, code, response) = self.PUT(route.format(**rest_params), query)
         return response
 
     ###########################
@@ -156,7 +186,7 @@ class MaxClient(object):
     def addActivity(self, content, otype='note', contexts=[]):
         """
         """
-        route = ROUTES['user_activities']
+        route = ROUTES['user_activities']['route']
         query = dict(object=dict(objectType=otype,
                                    content=content,
                                   ),
@@ -166,29 +196,29 @@ class MaxClient(object):
 
         rest_params = dict(username=self.actor['username'])
 
-        (success, code, response) = self.POST(route % rest_params, query)
+        (success, code, response) = self.POST(route.format(**rest_params), query)
         return response
 
     def getActivity(self, activity):
         """
         """
-        route = ROUTES['activity']
+        route = ROUTES['activity']['route']
         rest_params = dict(activity=activity)
-        (success, code, response) = self.GET(route % rest_params)
+        (success, code, response) = self.GET(route.format(**rest_params))
         return response
 
     def getUserTimeline(self):
         """
         """
-        route = ROUTES['timeline']
+        route = ROUTES['timeline']['route']
         rest_params = dict(username=self.actor['username'])
-        (success, code, response) = self.GET(route % rest_params)
+        (success, code, response) = self.GET(route.format(**rest_params))
         return response
 
     def getUserActivities(self, contexts=[]):
         """
         """
-        route = ROUTES['activities']
+        route = ROUTES['activities']['route']
         query = {}
         if contexts:
             query = {'contexts': contexts}
@@ -202,22 +232,22 @@ class MaxClient(object):
     def addComment(self, content, activity, otype='comment'):
         """
         """
-        route = ROUTES['comments']
+        route = ROUTES['comments']['route']
         query = dict(actor=self.actor,
                      object=dict(objectType=otype,
                                  content=content,
                                   ),
                     )
         rest_params = dict(activity=activity)
-        (success, code, response) = self.POST(route % rest_params, query)
+        (success, code, response) = self.POST(route.format(**rest_params), query)
         return response
 
     def getComments(self, activity):
         """
         """
-        route = ROUTES['comments']
+        route = ROUTES['comments']['route']
         rest_params = dict(activity=activity)
-        (success, code, response) = self.GET(route % rest_params)
+        (success, code, response) = self.GET(route.format(**rest_params))
 
     ###########################
     # SUBSCRIPTIONS
@@ -226,7 +256,7 @@ class MaxClient(object):
     def subscribe(self, url, otype='context'):
         """
         """
-        route = ROUTES['subscriptions']
+        route = ROUTES['subscriptions']['route']
 
         query = dict(object=dict(objectType=otype,
                                  url=url,
@@ -234,7 +264,7 @@ class MaxClient(object):
                     )
         rest_params = dict(username=self.actor['username'])
 
-        (success, code, response) = self.POST(route % rest_params, query)
+        (success, code, response) = self.POST(route.format(**rest_params), query)
         return response
 
     # def unsubscribe(self,username,url,otype='service'):
@@ -244,30 +274,30 @@ class MaxClient(object):
     def subscribed(self):
         """
         """
-        route = ROUTES['subscriptions']
+        route = ROUTES['subscriptions']['route']
 
         rest_params = dict(username=self.actor['username'])
 
-        (success, code, response) = self.GET(route % rest_params)
+        (success, code, response) = self.GET(route.format(**rest_params))
         return response
 
     def examplePOSTCall(self, username):
         """
         """
-        route = ROUTES['']
+        route = ROUTES['']['route']
 
         query = {}
         rest_params = dict(username=username)
 
-        (success, code, response) = self.POST(route % rest_params, query)
+        (success, code, response) = self.POST(route.format(**rest_params), query)
         return response
 
     def exampleGETCall(self, param1, param2):
         """
         """
-        route = ROUTES['']
+        route = ROUTES['']['route']
         rest_params = dict(Param1=param1)
-        (success, code, response) = self.GET(route % rest_params)
+        (success, code, response) = self.GET(route.format(**rest_params))
         return response
 
     # def follow(self,username,oid,otype='person'):
@@ -277,3 +307,28 @@ class MaxClient(object):
     # def unfollow(self,username,oid,otype='person'):
     #     """
     #     """
+
+    ###########################
+    # ADMIN
+    ###########################
+
+    def getUsers(self):
+        """
+        """
+        route = ROUTES['admin_users']['route']
+        (success, code, response) = self.GET(route)
+        return response
+
+    def getActivities(self):
+        """
+        """
+        route = ROUTES['admin_activities']['route']
+        (success, code, response) = self.GET(route)
+        return response
+
+    def getContexts(self):
+        """
+        """
+        route = ROUTES['admin_contexts']['route']
+        (success, code, response) = self.GET(route)
+        return response

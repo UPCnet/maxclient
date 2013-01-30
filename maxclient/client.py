@@ -5,12 +5,22 @@ from resources import ROUTES
 import getpass
 
 DEFAULT_MAX_SERVER = 'http://localhost'
-DEFAULT_OAUTH_SERVER = 'https://oauth.upc.edu'
+DEFAULT_OAUTH_SERVER = 'https://oauth-test.upc.edu'
+DEFAULT_SCOPE = 'widgetcli'
+DEFAULT_GRANT_TYPE = 'password'
+DEFAULT_CLIENT_ID = 'MAX'
 
 
 class MaxClient(object):
 
-    def __init__(self, url=DEFAULT_MAX_SERVER, oauth_server=DEFAULT_OAUTH_SERVER, actor=None, auth_method='oauth2'):
+    def __init__(self,
+                 url=DEFAULT_MAX_SERVER,
+                 oauth_server=DEFAULT_OAUTH_SERVER,
+                 actor=None,
+                 auth_method='oauth2',
+                 scope=DEFAULT_SCOPE,
+                 grant_type=DEFAULT_GRANT_TYPE,
+                 client_id=DEFAULT_CLIENT_ID):
         """
         """
         #Strip ending slashes, as all routes begin with a slash
@@ -18,6 +28,9 @@ class MaxClient(object):
         self.oauth_server = oauth_server.rstrip('/')
         self.setActor(actor)
         self.auth_method = auth_method
+        self.scope = scope
+        self.grant_type = grant_type
+        self.client_id = client_id
 
     def login(self, username='', password=False):
         if not username:
@@ -29,9 +42,9 @@ class MaxClient(object):
         return self.getToken(username, password)
 
     def getToken(self, username, password):
-        payload = {"grant_type": 'password',
-           "client_id": 'MAX',
-           "scope": 'widgetcli',
+        payload = {"grant_type": self.grant_type,
+           "client_id": self.client_id,
+           "scope": self.scope,
            "username": username,
            "password": password
            }
@@ -47,12 +60,10 @@ class MaxClient(object):
     def setActor(self, actor, type='person'):
         self.actor = actor and dict(objectType='person', username=actor) or None
 
-    def setToken(self, oauth2_token, oauth2_grant_type='password', oauth2_scope='widgetcli'):
+    def setToken(self, oauth2_token):
         """
         """
         self.token = oauth2_token
-        self.grant = oauth2_grant_type
-        self.scope = oauth2_scope
 
     def setBasicAuth(self, username, password):
         """

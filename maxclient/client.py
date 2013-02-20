@@ -176,8 +176,7 @@ class MaxClient(object):
         valid_properties = ['displayName']
         query = dict([(k, v) for k, v in kwargs.items() if k in valid_properties])
 
-        (success, code, response) = self.POST(route.format(**rest_params), query)
-        return response
+        return self.POST(route.format(**rest_params), query)
 
     def modifyUser(self, username, properties):
         """
@@ -342,4 +341,14 @@ class MaxClient(object):
         """
         route = ROUTES['admin_contexts']['route']
         (success, code, response) = self.GET(route)
+        return response
+
+    def getSecurity(self):
+        route = ROUTES['admin_security']['route']
+        resource_uri = '%s%s' % (self.url, route)
+        req = requests.get(resource_uri, verify=False)
+        isOk = req.status_code == 200
+        isJson = 'application/json' in req.headers.get('content-type', '')
+        if isOk:
+            response = isJson and json.loads(req.content) or None
         return response

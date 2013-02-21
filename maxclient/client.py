@@ -186,8 +186,7 @@ class MaxClient(object):
         query = properties
         rest_params = dict(username=username)
 
-        (success, code, response) = self.PUT(route.format(**rest_params), query)
-        return response
+        return self.PUT(route.format(**rest_params), query)
 
     ###########################
     # ACTIVITIES
@@ -260,10 +259,24 @@ class MaxClient(object):
         (success, code, response) = self.GET(route.format(**rest_params))
 
     ###########################
-    # SUBSCRIPTIONS
+    # SUBSCRIPTIONS & CONTEXTS
     ###########################
 
-    def subscribe(self, url, otype='context'):
+    def addContext(self, param_value, displayName, context_type='uri', param_name='url'):
+        """
+        """
+        route = ROUTES['contexts']['route']
+
+        query = {'object': {param_name: param_value,
+                            'objectType': context_type
+                            },
+                 'displayName': displayName
+                 }
+
+        (success, code, response) = self.POST(route, query)
+        return response
+
+    def subscribe(self, url, otype='uri', username=None):
         """
         """
         route = ROUTES['subscriptions']['route']
@@ -272,7 +285,7 @@ class MaxClient(object):
                                  url=url,
                                  ),
                      )
-        rest_params = dict(username=self.actor['username'])
+        rest_params = dict(username=username is not None and username or self.actor['username'])
 
         (success, code, response) = self.POST(route.format(**rest_params), query)
         return response

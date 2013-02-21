@@ -43,11 +43,11 @@ class MaxClient(object):
 
     def getToken(self, username, password):
         payload = {"grant_type": self.grant_type,
-           "client_id": self.client_id,
-           "scope": self.scope,
-           "username": username,
-           "password": password
-           }
+                   "client_id": self.client_id,
+                   "scope": self.scope,
+                   "username": username,
+                   "password": password
+                   }
 
         req = requests.post('{0}/token'.format(self.oauth_server), data=payload, verify=False)
         response = json.loads(req.text)
@@ -198,9 +198,9 @@ class MaxClient(object):
         """
         route = ROUTES['user_activities']['route']
         query = dict(object=dict(objectType=otype,
-                                   content=content,
-                                  ),
-                    )
+                                 content=content,
+                                 ),
+                     )
         if contexts:
             query['contexts'] = contexts
 
@@ -246,8 +246,8 @@ class MaxClient(object):
         query = dict(actor=self.actor,
                      object=dict(objectType=otype,
                                  content=content,
-                                  ),
-                    )
+                                 ),
+                     )
         rest_params = dict(activity=activity)
         (success, code, response) = self.POST(route.format(**rest_params), query)
         return response
@@ -270,8 +270,8 @@ class MaxClient(object):
 
         query = dict(object=dict(objectType=otype,
                                  url=url,
-                                  ),
-                    )
+                                 ),
+                     )
         rest_params = dict(username=self.actor['username'])
 
         (success, code, response) = self.POST(route.format(**rest_params), query)

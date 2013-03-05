@@ -201,7 +201,9 @@ class MaxClient(object):
                                  ),
                      )
         if contexts:
-            query['contexts'] = contexts
+            query['contexts'] = []
+            for context in contexts:
+                query['contexts'].append(dict(url=context, objectType='uri'))
 
         rest_params = dict(username=self.actor['username'])
 

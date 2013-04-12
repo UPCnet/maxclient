@@ -264,16 +264,15 @@ class MaxClient(object):
     # SUBSCRIPTIONS & CONTEXTS
     ###########################
 
-    def addContext(self, param_value, displayName, permissions=None, context_type='uri', param_name='url'):
+    def addContext(self, param_value, displayName, permissions=None, context_type='context', param_name='url'):
         """
         """
         route = ROUTES['contexts']['route']
 
-        query = {'object': {param_name: param_value,
-                            'objectType': context_type
-                            },
-                 'displayName': displayName,
-                 'permissions': permissions
+        query = {param_name: param_value,
+                'objectType': context_type,
+                'displayName': displayName,
+                'permissions': permissions
                  }
 
         if permissions:

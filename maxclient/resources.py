@@ -37,15 +37,15 @@ OAUTH_RESOURCES = {
 }
 
 ADMIN_RESOURCES = {
-    'admin_user_activities': {'route': '/admin/people/{username}/activities'},
-    'admin_context_activities': {'route': '/admin/contexts/{hash}/activities'},
-    'admin_users': {'route': '/admin/people'},
-    'admin_activities': {'route': '/admin/activities'},
-    'admin_contexts': {'route': '/admin/contexts'},
+    'admin_user_activities': {'route': '/people/{username}/activities'},
+    'admin_context_activities': {'route': '/contexts/{hash}/activities'},
+    'admin_users': {'route': '/people'},
+    'admin_activities': {'route': '/activities'},
+    'admin_contexts': {'route': '/contexts'},
 
-    'admin_user': {'route': '/admin/people/{id}'},
-    'admin_activity': {'route': '/admin/activities/{id}'},
-    'admin_context': {'route': '/admin/contexts/{id}'},
+    'admin_user': {'route': '/people/{id}'},
+    'admin_activity': {'route': '/activities/{id}'},
+    'admin_context': {'route': '/contexts/{id}'},
 
     'admin_security': {'route': '/admin/security'},
 }

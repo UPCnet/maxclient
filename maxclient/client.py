@@ -203,7 +203,7 @@ class MaxClient(object):
         if contexts:
             query['contexts'] = []
             for context in contexts:
-                query['contexts'].append(dict(url=context, objectType='uri'))
+                query['contexts'].append(dict(url=context, objectType='context'))
 
         rest_params = dict(username=self.actor['username'])
 
@@ -270,9 +270,9 @@ class MaxClient(object):
         route = ROUTES['contexts']['route']
 
         query = {param_name: param_value,
-                'objectType': context_type,
-                'displayName': displayName,
-                'permissions': permissions
+                 'objectType': context_type,
+                 'displayName': displayName,
+                 'permissions': permissions
                  }
 
         if permissions:
@@ -281,7 +281,7 @@ class MaxClient(object):
         (success, code, response) = self.POST(route, query)
         return response
 
-    def subscribe(self, url, otype='uri', username=None):
+    def subscribe(self, url, otype='context', username=None):
         """
         """
         route = ROUTES['subscriptions']['route']

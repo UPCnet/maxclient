@@ -56,6 +56,6 @@ RESTRICTED_RESOURCES = {
     'admin_security': {'route': '/admin/security'},
 }
 
-ROUTES = {}
-ROUTES.update(PUBLIC_RESOURCES)
-ROUTES.update(RESTRICTED_RESOURCES)
+RESOURCES = {}
+RESOURCES.update(PUBLIC_RESOURCES)
+RESOURCES.update(RESTRICTED_RESOURCES)

@@ -1,7 +1,7 @@
 import requests
 import json
 import urllib
-from resources import ROUTES
+from resources import RESOURCES as ROUTES
 import getpass
 
 DEFAULT_MAX_SERVER = 'http://localhost'

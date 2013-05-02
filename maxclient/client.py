@@ -87,6 +87,29 @@ class MaxClient(object):
         auth = (self.ba_username, self.ba_password)
         return auth
 
+    def HEAD(self, route, qs=''):
+        """
+        """
+        headers = {}
+        resource_uri = '%s%s' % (self.url, route)
+        if qs:
+            resource_uri = '%s?%s' % (resource_uri, qs)
+        if self.auth_method == 'oauth2':
+            headers.update(self.OAuth2AuthHeaders())
+            req = requests.get(resource_uri, headers=headers, verify=False)
+        elif self.auth_method == 'basic':
+            req = requests.get(resource_uri, auth=self.BasicAuthHeaders(), verify=False)
+        else:
+            raise
+
+        isOk = req.status_code == 200
+        if isOk:
+            response = int(req.headers.get('X-totalItems', '0'))
+        else:
+            print req.status_code
+            response = ''
+        return (isOk, req.status_code, response)
+
     def GET(self, route, qs=''):
         """
         """
@@ -226,14 +249,17 @@ class MaxClient(object):
         (success, code, response) = self.GET(route.format(**rest_params))
         return response
 
-    def getUserActivities(self, contexts=[]):
+    def getUserActivities(self, contexts=[], count=True):
         """
         """
         route = ROUTES['activities']['route']
         query = {}
         if contexts:
             query = {'contexts': contexts}
-        (success, code, response) = self.GET(route, qs=urllib.urlencode(query, True))
+        if count:
+            (success, code, response) = self.GET(route, qs=urllib.urlencode(query, True))
+        else:
+            (success, code, response) = self.HEAD(route, qs=urllib.urlencode(query, True))
         return response
 
     ###########################

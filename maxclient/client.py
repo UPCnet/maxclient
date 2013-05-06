@@ -259,15 +259,20 @@ class MaxClient(object):
         (success, code, response) = self.GET(route, qs=urllib.urlencode(query, True))
         return response
 
-    def getUserActivities(self, count=True):
+    def getUserActivities(self, context=None, count=False):
         """
         """
         route = ROUTES['user_activities']['route']
         rest_params = dict(username=self.actor['username'])
+
+        params = {}
+        if context:
+            params['qs'] = 'context={}'.format(context)
+
         if count:
-            (success, code, response) = self.HEAD(route.format(**rest_params))
+            (success, code, response) = self.HEAD(route.format(**rest_params), **params)
         else:
-            (success, code, response) = self.GET(route.format(**rest_params))
+            (success, code, response) = self.GET(route.format(**rest_params), **params)
         return response
 
     ###########################

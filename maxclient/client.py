@@ -275,20 +275,30 @@ class MaxClient(object):
             (success, code, response) = self.GET(route.format(**rest_params), **params)
         return response
 
-    def getTimelineLastAuthors(self):
+    def getTimelineLastAuthors(self, limit=None):
         """
         """
         route = ROUTES['timeline_authors']['route']
         rest_params = dict(username=self.actor['username'])
-        (success, code, response) = self.GET(route.format(**rest_params))
+
+        params = {}
+        if limit:
+            params['qs'] = 'limit={}'.format(limit)
+
+        (success, code, response) = self.GET(route.format(**rest_params), **params)
         return response
 
-    def getContextLastAuthors(self, context):
+    def getContextLastAuthors(self, context, limit=None):
         """
         """
         route = ROUTES['context_activities_authors']['route']
         rest_params = dict(hash=context)
-        (success, code, response) = self.GET(route.format(**rest_params))
+
+        params = {}
+        if limit:
+            params['qs'] = 'limit={}'.format(limit)
+
+        (success, code, response) = self.GET(route.format(**rest_params), **params)
         return response
 
     ###########################

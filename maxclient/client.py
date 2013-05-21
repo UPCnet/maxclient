@@ -250,25 +250,29 @@ class MaxClient(object):
         return response
 
     def getContextActivities(self, context, count=False):
+        """ Return the activities given a context
         """
-        """
-        route = ROUTES['activities']['route']
+        route = ROUTES['context_activities']['route']
+        rest_params = dict(hash=context)
 
         params = {}
         if context:
             params['qs'] = 'context={}'.format(context)
 
         if count:
-            (success, code, response) = self.HEAD(route, **params)
+            (success, code, response) = self.HEAD(route.format(**rest_params), **params)
         else:
-            (success, code, response) = self.GET(route, **params)
+            (success, code, response) = self.GET(route.format(**rest_params), **params)
         return response
 
-    def getUserActivities(self, context=None, count=False):
-        """
+    def getUserActivities(self, context=None, count=False, username=None):
+        """ Return all the user activities under a specific context or globally
+            if not specified.
+
+            It can be invoked as admin, if an username of the actor is supplied.
         """
         route = ROUTES['user_activities']['route']
-        rest_params = dict(username=self.actor['username'])
+        rest_params = dict(username=username if username is not None else self.actor['username'])
 
         params = {}
         if context:
@@ -304,6 +308,26 @@ class MaxClient(object):
             params['qs'] = 'limit={}'.format(limit)
 
         (success, code, response) = self.GET(route.format(**rest_params), **params)
+        return response
+
+    def getAllActivities(self, count=False):
+        """ Stats only endpoint, return the aggregation of all user activities """
+        route = ROUTES['activities']['route']
+
+        if count:
+            (success, code, response) = self.HEAD(route)
+        else:
+            (success, code, response) = self.GET(route)
+        return response
+
+    def getAllComments(self, count=False):
+        """ Stats only endpoint, return the aggregation of all user activities """
+        route = ROUTES['comments']['route']
+
+        if count:
+            (success, code, response) = self.HEAD(route)
+        else:
+            (success, code, response) = self.GET(route)
         return response
 
     ###########################

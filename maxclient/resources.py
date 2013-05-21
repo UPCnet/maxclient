@@ -5,11 +5,12 @@ PUBLIC_RESOURCES = {
     'user_activities': {'route': '/people/{username}/activities'},
 
     'activities': {'route': '/activities'},
+    'comments': {'route': '/activities/comments'},
     'activity': {'route': '/activities/{activity}'},
     'timeline': {'route': '/people/{username}/timeline'},
     'timeline_authors': {'route': '/people/{username}/timeline/authors'},
 
-    'comments': {'route': '/activities/{activity}/comments'},
+    'activity_comments': {'route': '/activities/{activity}/comments'},
 
     'subscriptions': {'route': '/people/{username}/subscriptions'},
     'subscription': {'route': '/people/{username}/subscriptions/{hash}'},
@@ -19,6 +20,7 @@ PUBLIC_RESOURCES = {
 
     'contexts': {'route': '/contexts'},
     'context': {'route': '/contexts/{hash}'},
+    'context_activities': {'route': '/contexts/{hash}/activities'},
     'context_avatar': {'route': '/contexts/{hash}/avatar'},
     'public_contexts': {'route': '/contexts/public'},
     'context_user_permission': {'route': '/contexts/{hash}/permissions/{username}/{permission}'},

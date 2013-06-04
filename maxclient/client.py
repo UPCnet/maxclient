@@ -52,7 +52,10 @@ class MaxClient(object):
         req = requests.post('{0}/token'.format(self.oauth_server), data=payload, verify=False)
         response = json.loads(req.text)
         if req.status_code == 200:
-            self.token = response.get("oauth_token")
+            self.token = response.get("access_token", False)
+            # Fallback to legacy oauth server
+            if not self.token:
+                self.token = response.get("oauth_token")
             return self.token
         else:
             raise AttributeError("Bad username or password.")

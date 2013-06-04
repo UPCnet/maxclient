@@ -8,15 +8,15 @@ CHANGES = open(os.path.join(here, 'CHANGES.rst')).read()
 
 requires = [
     'requests',
-    ]
+]
 
 setup(name='maxclient',
-      version='3.0',
+      version='3.3',
       description='Client library wrapper to access MAX API.',
       long_description=README + '\n\n' + CHANGES,
       classifiers=[
-        "Programming Language :: Python",
-        ],
+          "Programming Language :: Python",
+      ],
       author='UPCnet Plone Team',
       author_email='plone.team@upcnet.es',
       url='https://github.com/upcnet/maxclient',

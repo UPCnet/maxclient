@@ -440,21 +440,21 @@ class MaxClient(object):
     def getUsers(self):
         """
         """
-        route = ROUTES['admin_users']['route']
+        route = ROUTES['users']['route']
         (success, code, response) = self.GET(route)
         return response
 
     def getActivities(self):
         """
         """
-        route = ROUTES['admin_activities']['route']
+        route = ROUTES['activities']['route']
         (success, code, response) = self.GET(route)
         return response
 
     def getContexts(self):
         """
         """
-        route = ROUTES['admin_contexts']['route']
+        route = ROUTES['contexts']['route']
         (success, code, response) = self.GET(route)
         return response
 

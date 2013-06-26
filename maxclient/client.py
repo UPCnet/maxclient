@@ -1,3 +1,4 @@
+from hashlib import sha1
 import requests
 import json
 import urllib
@@ -175,6 +176,32 @@ class MaxClient(object):
             req = requests.put(resource_uri, data=json_query, headers=headers, verify=False)
         elif self.auth_method == 'basic':
             req = requests.put(resource_uri, data=json_query, auth=self.BasicAuthHeaders(), verify=False)
+        else:
+            raise
+
+        isOk = req.status_code in [200, 201] and req.status_code or False
+        isJson = 'application/json' in req.headers.get('content-type', '')
+        if isOk:
+            response = isJson and json.loads(req.content) or None
+        else:
+            print req.status_code
+            response = ''
+
+        return (isOk, req.status_code, response)
+
+    def DELETE(self, route, query={}):
+        """
+        """
+        headers = {}
+        resource_uri = '%s%s' % (self.url, route)
+        json_query = json.dumps(query)
+
+        if self.auth_method == 'oauth2':
+            headers.update(self.OAuth2AuthHeaders())
+            headers.update({'content-type': 'application/json'})
+            req = requests.delete(resource_uri, data=json_query, headers=headers, verify=False)
+        elif self.auth_method == 'basic':
+            req = requests.delete(resource_uri, data=json_query, auth=self.BasicAuthHeaders(), verify=False)
         else:
             raise
 
@@ -392,9 +419,28 @@ class MaxClient(object):
         (success, code, response) = self.POST(route.format(**rest_params), query)
         return response
 
-    # def unsubscribe(self,username,url,otype='service'):
-    #     """
-    #     """
+    def unsubscribe(self, url, otype='context', username=None):
+        """ Takes directly the url and calculate the hash
+        """
+        route = ROUTES['subscription']['route']
+        context_hash = sha1(url).hexdigest()
+
+        rest_params = dict(username=username if username is not None else self.actor['username'],
+                           hash=context_hash)
+
+        (success, code, response) = self.DELETE(route.format(**rest_params))
+        return response
+
+    def subscribed_to_context(self, url):
+        """
+        """
+        route = ROUTES['context_subscribed']['route']
+        context_hash = sha1(url).hexdigest()
+
+        rest_params = dict(hash=context_hash)
+
+        (success, code, response) = self.GET(route.format(**rest_params))
+        return response
 
     def subscribed(self):
         """

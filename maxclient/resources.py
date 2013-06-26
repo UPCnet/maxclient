@@ -20,12 +20,12 @@ PUBLIC_RESOURCES = {
 
     'contexts': {'route': '/contexts'},
     'context': {'route': '/contexts/{hash}'},
-    'context_activities': {'route': '/contexts/{hash}/activities'},
     'context_avatar': {'route': '/contexts/{hash}/avatar'},
     'public_contexts': {'route': '/contexts/public'},
     'context_user_permission': {'route': '/contexts/{hash}/permissions/{username}/{permission}'},
     'context_activities': {'route': '/contexts/{hash}/activities'},
     'context_activities_authors': {'route': '/contexts/{hash}/activities/authors'},
+    'context_subscribed': {'route': '/contexts/{hash}/subscribed'},
 
     # MAX 3.0
     'conversations': {'route': '/conversations'},
@@ -39,7 +39,7 @@ PUBLIC_RESOURCES = {
     'user_shares': {'route': '/people/{username}/shares'},
     'user_likes': {'route': '/people/{username}/likes'},
     'follows': {'route': '/people/{username}/follows'},
-    'follow': {'route': '/people/{username}/follows/{followedDN}'},
+    'follow': {'route': '/people/{username}/follows/{followedUsername}'},
     'likes': {'route': '/activities/{activity}/likes'},
     'like': {'route': '/activities/{activity}/likes/{likeId}'},
     'shares': {'route': '/activities/{activity}/shares'},
@@ -59,6 +59,13 @@ RESTRICTED_RESOURCES = {
     'admin_security': {'route': '/admin/security'},
 }
 
+AUTHENTICATION_RESOURCES = {
+    'auth_user': {'route': '/auth/user'},
+    'auth_vhost': {'route': '/auth/vhost'},
+    'auth_resource': {'route': '/auth/resource'},
+}
+
 RESOURCES = {}
 RESOURCES.update(PUBLIC_RESOURCES)
 RESOURCES.update(RESTRICTED_RESOURCES)
+RESOURCES.update(AUTHENTICATION_RESOURCES)

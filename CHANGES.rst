@@ -3,6 +3,8 @@ CHANGELOG
 
 3.4dev (unreleased)
 -------------------
+* Added endpoint wrapper for returning the subscirbers for a given context
+* Added endpoint wrapper for unsubscribing a user from a context
 
 3.3.1 (2013-06-04)
 ------------------

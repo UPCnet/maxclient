@@ -434,7 +434,7 @@ class MaxClient(object):
     def subscribed_to_context(self, url):
         """
         """
-        route = ROUTES['context_subscribed']['route']
+        route = ROUTES['context_subscriptions']['route']
         context_hash = sha1(url).hexdigest()
 
         rest_params = dict(hash=context_hash)

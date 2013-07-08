@@ -160,7 +160,7 @@ class MaxClient(object):
             response = isJson and json.loads(req.content) or None
         else:
             print req.status_code
-            response = ''
+            response = req.content
 
         return (isOk, req.status_code, response)
 

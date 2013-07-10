@@ -205,13 +205,13 @@ class MaxClient(object):
         else:
             raise
 
-        isOk = req.status_code in [200, 201] and req.status_code or False
+        isOk = req.status_code in [204] and req.status_code or False
         isJson = 'application/json' in req.headers.get('content-type', '')
         if isOk:
             response = isJson and json.loads(req.content) or None
         else:
             print req.status_code
-            response = ''
+            response = req.content
 
         return (isOk, req.status_code, response)
 
@@ -408,7 +408,7 @@ class MaxClient(object):
     def deleteContext(self, url):
         """
         """
-        route = ROUTES['contexts']['route']
+        route = ROUTES['context']['route']
 
         context_hash = sha1(url).hexdigest()
         rest_params = dict(hash=context_hash)

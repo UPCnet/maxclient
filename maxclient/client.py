@@ -405,6 +405,17 @@ class MaxClient(object):
         (success, code, response) = self.POST(route, query)
         return response
 
+    def deleteContext(self, url):
+        """
+        """
+        route = ROUTES['contexts']['route']
+
+        context_hash = sha1(url).hexdigest()
+        rest_params = dict(hash=context_hash)
+
+        (success, code, response) = self.DELETE(route.format(**rest_params))
+        return response
+
     def subscribe(self, url, otype='context', username=None):
         """
         """

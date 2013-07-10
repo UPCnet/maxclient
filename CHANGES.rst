@@ -1,10 +1,11 @@
 CHANGELOG
 ==========
 
-3.3.4 (unreleased)
+3.4 (unreleased)
 ------------------
 
 - Nothing changed yet.
+ * Just update the minor version to match the MAX minor version.
 
 
 3.3.3 (2013-07-10)

@@ -1,11 +1,13 @@
 CHANGELOG
 ==========
 
-3.3.3 (unreleased)
+3.3.3 (2013-07-10)
 ------------------
 
-- Nothing changed yet.
-
+ * Fix latter endpoint added and better handling for delete operations. [Victor Fernandez de Alba]
+ * Merge branch 'master' of github.com:UPCnet/maxclient [Victor Fernandez de Alba]
+ * Add new endpoint wrapper [Victor Fernandez de Alba]
+ * Better propagation of the information about what happened [Victor Fernandez de Alba]
 
 3.3.2 (2013-07-01)
 ------------------

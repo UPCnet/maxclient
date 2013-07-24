@@ -134,7 +134,7 @@ class MaxClient(object):
         if isOk:
             response = isJson and json.loads(req.content) or None
         else:
-            print req.status_code
+            print 'GET {} - {} - {}'.format(req.status_code, req.content, route)
             response = ''
         return (isOk, req.status_code, response)
 
@@ -159,7 +159,7 @@ class MaxClient(object):
         if isOk:
             response = isJson and json.loads(req.content) or None
         else:
-            print req.status_code
+            print 'POST {} - {} - {}'.format(req.status_code, req.content, route)
             response = req.content
 
         return (isOk, req.status_code, response)
@@ -184,7 +184,7 @@ class MaxClient(object):
         if isOk:
             response = isJson and json.loads(req.content) or None
         else:
-            print req.status_code
+            print 'PUT {} - {} - {}'.format(req.status_code, req.content, route)
             response = ''
 
         return (isOk, req.status_code, response)
@@ -210,7 +210,7 @@ class MaxClient(object):
         if isOk:
             response = isJson and json.loads(req.content) or None
         else:
-            print req.status_code
+            print 'DELETE {} - {} - {}'.format(req.status_code, req.content, route)
             response = req.content
 
         return (isOk, req.status_code, response)

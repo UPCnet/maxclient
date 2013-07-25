@@ -1,12 +1,11 @@
 CHANGELOG
 ==========
 
-3.4 (unreleased)
-------------------
+3.4 (2013-07-25)
+----------------
 
-- Nothing changed yet.
- * Just update the minor version to match the MAX minor version.
-
+ * Add more verbose errors [Victor Fernandez de Alba]
+ * Updated minor version to match the MAX minor version [Victor Fernandez de Alba]
 
 3.3.3 (2013-07-10)
 ------------------

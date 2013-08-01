@@ -138,21 +138,26 @@ class MaxClient(object):
             response = ''
         return (isOk, req.status_code, response)
 
-    def POST(self, route, query={}):
+    def POST(self, route, query={}, upload_file=None):
         """
         """
         headers = {}
         resource_uri = '%s%s' % (self.url, route)
         json_query = json.dumps(query)
 
-        if self.auth_method == 'oauth2':
+        if upload_file:
             headers.update(self.OAuth2AuthHeaders())
-            headers.update({'content-type': 'application/json'})
-            req = requests.post(resource_uri, data=json_query, headers=headers, verify=False)
-        elif self.auth_method == 'basic':
-            req = requests.post(resource_uri, data=json_query, auth=self.BasicAuthHeaders(), verify=False)
+            files = {'file': ('avatar.png', upload_file)}
+            req = requests.post(resource_uri, headers=headers, files=files, verify=False)
         else:
-            raise
+            if self.auth_method == 'oauth2':
+                headers.update(self.OAuth2AuthHeaders())
+                headers.update({'content-type': 'application/json'})
+                req = requests.post(resource_uri, data=json_query, headers=headers, verify=False)
+            elif self.auth_method == 'basic':
+                req = requests.post(resource_uri, data=json_query, auth=self.BasicAuthHeaders(), verify=False)
+            else:
+                raise
 
         isOk = req.status_code in [200, 201] and req.status_code or False
         isJson = 'application/json' in req.headers.get('content-type', '')
@@ -240,6 +245,14 @@ class MaxClient(object):
         rest_params = dict(username=username)
 
         return self.PUT(route.format(**rest_params), query)
+
+    def postAvatar(self, username, image):
+        """
+        """
+        route = ROUTES['avatar']['route']
+        rest_params = dict(username=username)
+
+        return self.POST(route.format(**rest_params), upload_file=image)
 
     ###########################
     # ACTIVITIES

@@ -1,11 +1,10 @@
 CHANGELOG
 ==========
 
-3.4.1 (unreleased)
+3.4.1 (2013-08-02)
 ------------------
 
-- Nothing changed yet.
-
+ * Added wrapper for upload users avatar [Victor Fernandez de Alba]
 
 3.4 (2013-07-25)
 ----------------

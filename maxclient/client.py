@@ -5,8 +5,8 @@ import urllib
 from resources import RESOURCES as ROUTES
 import getpass
 
-DEFAULT_MAX_SERVER = 'http://localhost'
-DEFAULT_OAUTH_SERVER = 'https://oauth-test.upc.edu'
+DEFAULT_MAX_SERVER = 'http://localhost:8081'
+DEFAULT_OAUTH_SERVER = 'https://oauth.upcnet.es'
 DEFAULT_SCOPE = 'widgetcli'
 DEFAULT_GRANT_TYPE = 'password'
 DEFAULT_CLIENT_ID = 'MAX'

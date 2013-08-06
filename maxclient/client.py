@@ -61,6 +61,9 @@ class MaxClient(object):
         else:
             raise AttributeError("Bad username or password.")
 
+    def getActor(self):
+        return self.actor.get('username', '')
+
     def setActor(self, actor, type='person'):
         self.actor = actor and dict(objectType='person', username=actor) or None
 

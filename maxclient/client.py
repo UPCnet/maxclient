@@ -261,7 +261,7 @@ class MaxClient(object):
     # ACTIVITIES
     ###########################
 
-    def addActivity(self, content, otype='note', contexts=[]):
+    def addActivity(self, content, otype='note', contexts=[], generator=None, username=None):
         """
         """
         route = ROUTES['user_activities']['route']
@@ -274,10 +274,31 @@ class MaxClient(object):
             for context in contexts:
                 query['contexts'].append(dict(url=context, objectType='context'))
 
-        rest_params = dict(username=self.actor['username'])
+        if generator:
+            query['generator'] = generator
+
+        rest_params = dict(username=username is not None and username or self.actor['username'])
 
         (success, code, response) = self.POST(route.format(**rest_params), query)
-        return response
+        return (success, code, response)
+
+    def add_activity_as_context(self, content, url, otype='note', generator=None):
+        """
+        """
+        route = ROUTES['context_activities']['route']
+        query = dict(object=dict(objectType=otype,
+                                 content=content,
+                                 ),
+                     )
+
+        if generator:
+            query['generator'] = generator
+
+        context_hash = sha1(url).hexdigest()
+        rest_params = dict(hash=context_hash)
+
+        (success, code, response) = self.POST(route.format(**rest_params), query)
+        return (success, code, response)
 
     def getActivity(self, activity):
         """

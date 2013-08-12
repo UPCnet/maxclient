@@ -3,6 +3,7 @@ PUBLIC_RESOURCES = {
     'user': {'route': '/people/{username}'},
     'avatar': {'route': '/people/{username}/avatar'},
     'user_activities': {'route': '/people/{username}/activities'},
+    'user_device': {'route': '/people/{username}/device/{platform}/{token}'},
 
     'activities': {'route': '/activities'},
     'comments': {'route': '/activities/comments'},
@@ -30,6 +31,7 @@ PUBLIC_RESOURCES = {
     # MAX 3.0
     'conversations': {'route': '/conversations'},
     'conversation': {'route': '/conversations/{id}'},
+    'pushtokens': {'route': '/conversations/{id}/tokens'},
     'messages': {'route': '/conversations/{id}/messages'},
     'message': {'route': '/conversations/{id}/messages/{activity}'},
     'participants': {'route': '/conversations/{id}/participants'},

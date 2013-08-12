@@ -500,6 +500,24 @@ class MaxClient(object):
         (success, code, response) = self.GET(route.format(**rest_params))
         return response
 
+    ###########################
+    # Conversations
+    ###########################
+
+    def pushtokens_by_conversation(self, conversation_id):
+        """
+        """
+        route = ROUTES['pushtokens']['route']
+
+        rest_params = dict(id=conversation_id)
+
+        (success, code, response) = self.GET(route.format(**rest_params))
+        return (success, code, response)
+
+    ###########################
+    # Examples
+    ###########################
+
     def examplePOSTCall(self, username):
         """
         """

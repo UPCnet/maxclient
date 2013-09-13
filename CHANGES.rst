@@ -1,11 +1,14 @@
 CHANGELOG
 ==========
 
-3.4.2 (unreleased)
-------------------
+3.5 (2013-09-13)
+----------------
 
-- Nothing changed yet.
-
+ * Update Manifest [Victor Fernandez de Alba]
+ * New wraper for conversation tokens endpoint. [Victor Fernandez de Alba]
+ * Added wrapper for post activity as a context endpoint [Victor Fernandez de Alba]
+ * Added new method for identify current actor [Victor Fernandez de Alba]
+ * Update sensible defaults for maxclient [Victor Fernandez de Alba]
 
 3.4.1 (2013-08-02)
 ------------------

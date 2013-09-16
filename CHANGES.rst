@@ -7,12 +7,6 @@ CHANGELOG
 - Nothing changed yet.
 
 
-3.5.1 (unreleased)
-----------------
-
-- Nothing changed yet.
-
-
 3.5 (2013-09-13)
 ----------------
 

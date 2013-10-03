@@ -1,11 +1,10 @@
 CHANGELOG
 ==========
 
-3.5.1 (unreleased)
+3.5.1 (2013-10-03)
 ------------------
 
-- Nothing changed yet.
-
+ * Added mod operation for context [Carles Bruguera]
 
 3.5 (2013-09-13)
 ----------------

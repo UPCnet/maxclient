@@ -249,6 +249,17 @@ class MaxClient(object):
 
         return self.PUT(route.format(**rest_params), query)
 
+    def modifyContext(self, url, properties):
+        """
+        """
+        route = ROUTES['context']['route']
+
+        query = properties
+        context_hash = sha1(url).hexdigest()
+        rest_params = dict(hash=context_hash)
+
+        return self.PUT(route.format(**rest_params), query)
+
     def postAvatar(self, username, image):
         """
         """

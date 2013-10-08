@@ -1,11 +1,10 @@
 CHANGELOG
 ==========
 
-3.5.2 (unreleased)
+3.5.2 (2013-10-08)
 ------------------
 
-- Nothing changed yet.
-
+* Fix bug that returned None when max returned [] [Carles Bruguera]
 
 3.5.1 (2013-10-03)
 ------------------

@@ -135,7 +135,7 @@ class MaxClient(object):
         isOk = req.status_code == 200
         isJson = 'application/json' in req.headers.get('content-type', '')
         if isOk:
-            response = isJson and json.loads(req.content) or None
+            response = json.loads(req.content) if isJson else None
         else:
             print 'GET {} - {} - {}'.format(req.status_code, req.content, route)
             response = ''
@@ -165,7 +165,7 @@ class MaxClient(object):
         isOk = req.status_code in [200, 201] and req.status_code or False
         isJson = 'application/json' in req.headers.get('content-type', '')
         if isOk:
-            response = isJson and json.loads(req.content) or None
+            response = json.loads(req.content) if isJson else None
         else:
             print 'POST {} - {} - {}'.format(req.status_code, req.content, route)
             response = req.content
@@ -190,7 +190,7 @@ class MaxClient(object):
         isOk = req.status_code in [200, 201] and req.status_code or False
         isJson = 'application/json' in req.headers.get('content-type', '')
         if isOk:
-            response = isJson and json.loads(req.content) or None
+            response = json.loads(req.content) if isJson else None
         else:
             print 'PUT {} - {} - {}'.format(req.status_code, req.content, route)
             response = ''
@@ -216,7 +216,7 @@ class MaxClient(object):
         isOk = req.status_code in [204] and req.status_code or False
         isJson = 'application/json' in req.headers.get('content-type', '')
         if isOk:
-            response = isJson and json.loads(req.content) or None
+            response = json.loads(req.content) if isJson else None
         else:
             print 'DELETE {} - {} - {}'.format(req.status_code, req.content, route)
             response = req.content

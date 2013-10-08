@@ -11,7 +11,7 @@ requires = [
 ]
 
 setup(name='maxclient',
-      version='3.5.2',
+      version='3.5.3.dev0',
       description='Client library wrapper to access MAX API.',
       long_description=README + '\n\n' + CHANGES,
       classifiers=[

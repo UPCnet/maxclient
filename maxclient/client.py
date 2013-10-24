@@ -260,6 +260,28 @@ class MaxClient(object):
 
         return self.PUT(route.format(**rest_params), query)
 
+    def add_tags_to_context(self, url, tags):
+        """
+        """
+        route = ROUTES['context_tags']['route']
+
+        query = tags
+        context_hash = sha1(url).hexdigest()
+        rest_params = dict(hash=context_hash)
+
+        return self.PUT(route.format(**rest_params), query)
+
+    def remove_tag_from_context(self, url, tag):
+        """
+        """
+        route = ROUTES['context_tag']['route']
+
+        query = {}
+        context_hash = sha1(url).hexdigest()
+        rest_params = dict(hash=context_hash, tag=tag)
+
+        return self.DELETE(route.format(**rest_params), query)
+
     def postAvatar(self, username, image):
         """
         """

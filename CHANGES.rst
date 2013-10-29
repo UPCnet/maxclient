@@ -1,11 +1,10 @@
 CHANGELOG
 ==========
 
-3.5.3 (unreleased)
+3.5.3 (2013-10-29)
 ------------------
 
-- Nothing changed yet.
-
+* Methods to manage context tags [Carles Bruguera]
 
 3.5.2 (2013-10-08)
 ------------------

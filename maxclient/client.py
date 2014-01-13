@@ -475,6 +475,17 @@ class MaxClient(object):
         (success, code, response) = self.POST(route, query)
         return response
 
+    def get_context(self, url):
+        """
+        """
+        route = ROUTES['context']['route']
+
+        context_hash = sha1(url).hexdigest()
+        rest_params = dict(hash=context_hash)
+
+        (success, code, response) = self.GET(route.format(**rest_params))
+        return response
+
     def deleteContext(self, url):
         """
         """
@@ -531,6 +542,32 @@ class MaxClient(object):
         rest_params = dict(username=self.actor['username'])
 
         (success, code, response) = self.GET(route.format(**rest_params))
+        return response
+
+    def grant_permission(self, url, username=None, permission='read'):
+        """
+        """
+        route = ROUTES['context_user_permission']['route']
+        context_hash = sha1(url).hexdigest()
+
+        rest_params = dict(username=username is not None and username or self.actor['username'],
+                           hash=context_hash,
+                           permission=permission)
+
+        (success, code, response) = self.PUT(route.format(**rest_params))
+        return response
+
+    def revoke_permission(self, url, username=None, permission='write'):
+        """
+        """
+        route = ROUTES['context_user_permission']['route']
+        context_hash = sha1(url).hexdigest()
+
+        rest_params = dict(username=username is not None and username or self.actor['username'],
+                           hash=context_hash,
+                           permission=permission)
+
+        (success, code, response) = self.DELETE(route.format(**rest_params))
         return response
 
     ###########################

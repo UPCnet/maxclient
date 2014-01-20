@@ -1,11 +1,10 @@
 CHANGELOG
 ==========
 
-3.5.4 (unreleased)
-------------------
+3.6 (2014-01-20)
+----------------
 
-- Nothing changed yet.
-
+* Added get_context, grant permission, revoke permission [Victor Fernandez de Alba]
 
 3.5.3 (2013-10-29)
 ------------------

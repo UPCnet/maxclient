@@ -655,3 +655,9 @@ class MaxClient(object):
         rest_params = dict(user=user, role=role)
         (success, code, response) = self.POST(route.format(**rest_params))
         return response
+
+    def revoke_security_role(self, user, role):
+        route = ROUTES['admin_security_role_user']['route']
+        rest_params = dict(user=user, role=role)
+        (success, code, response) = self.DELETE(route.format(**rest_params))
+        return response

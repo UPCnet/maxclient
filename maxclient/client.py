@@ -649,3 +649,9 @@ class MaxClient(object):
         if isOk:
             response = isJson and json.loads(req.content) or None
         return response
+
+    def grant_security_role(self, user, role):
+        route = ROUTES['admin_security_role_user']['route']
+        rest_params = dict(user=user, role=role)
+        (success, code, response) = self.POST(route.format(**rest_params))
+        return response

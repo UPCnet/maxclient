@@ -35,19 +35,26 @@ PUBLIC_RESOURCES = {
     # MAX 3.0
     'conversations': {'route': '/conversations'},
     'conversation': {'route': '/conversations/{id}'},
+    'conversation_avatar': {'route': '/conversations/{id}/avatar'},
     'pushtokens': {'route': '/conversations/{id}/tokens'},
     'messages': {'route': '/conversations/{id}/messages'},
     'message': {'route': '/conversations/{id}/messages/{activity}'},
     'participants': {'route': '/conversations/{id}/participants'},
     'participant': {'route': '/conversations/{id}/participant'},
 
+    # MAX 3.6
+    'likes': {'route': '/activities/{activity}/likes'},
+    'like': {'route': '/activities/{activity}/likes/{username}'},
+    'user_likes': {'route': '/people/{username}/likes'},
+    'favorites': {'route': '/activities/{activity}/favorites'},
+    'favorite': {'route': '/activities/{activity}/favorites/{username}'},
+    'user_favorites': {'route': '/people/{username}/favorites'},
+
+
     # MAX 4.0
     'user_shares': {'route': '/people/{username}/shares'},
-    'user_likes': {'route': '/people/{username}/likes'},
     'follows': {'route': '/people/{username}/follows'},
     'follow': {'route': '/people/{username}/follows/{followedUsername}'},
-    'likes': {'route': '/activities/{activity}/likes'},
-    'like': {'route': '/activities/{activity}/likes/{likeId}'},
     'shares': {'route': '/activities/{activity}/shares'},
     'share': {'route': '/activities/{activity}/shares/{shareId}'},
 
@@ -62,6 +69,12 @@ PUBLIC_RESOURCES = {
 RESTRICTED_RESOURCES = {
 
     'admin_security': {'route': '/admin/security'},
+    'admin_security_role': {'route': '/admin/security/roles/{role}'},
+    'admin_security_role_user': {'route': '/admin/security/roles/{role}/users/{user}'},
+    'maintenance_keywords': {'route': '/admin/maintenance/keywords'},
+    'maintenance_dates': {'route': '/admin/maintenance/dates'},
+    'maintenance_subscriptions': {'route': '/admin/maintenance/subscriptions'},
+    'maintenance_conversations': {'route': '/admin/maintenance/conversations'}
 }
 
 AUTHENTICATION_RESOURCES = {

@@ -1,11 +1,11 @@
 CHANGELOG
 ==========
 
-3.6.1 (unreleased)
+3.6.1 (2014-02-24)
 ------------------
 
-- Nothing changed yet.
-
+* Add both endpoints wrappers, grant and revoke [Victor Fernandez de Alba]
+* Add security grant role wrapper [Victor Fernandez de Alba]
 
 3.6 (2014-01-20)
 ----------------

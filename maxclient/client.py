@@ -59,7 +59,9 @@ class MaxClient(object):
                 self.token = response.get("oauth_token")
             return self.token
         else:
-            raise AttributeError("Bad username or password.")
+            raise AttributeError("""Bad username or password.
+                Oauth server = {}
+                Max Server = {}""".format(self.url, self.oauth_server))
 
     def getActor(self):
         return self.actor.get('username', '')
@@ -226,6 +228,15 @@ class MaxClient(object):
     ###########################
     # USERS
     ###########################
+
+    def getUser(self, username=None):
+        """
+        """
+        route = ROUTES['user']['route']
+        rest_params = dict(username=username is not None and username or self.actor['username'])
+
+        (success, code, response) = self.GET(route.format(**rest_params))
+        return response
 
     def addUser(self, username, **kwargs):
         """

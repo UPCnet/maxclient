@@ -1,8 +1,10 @@
 from client import MaxClient as RPCMaxClient
-from resources import RESOURCES as ROUTES
 from functools import partial
-import re
+from hashlib import sha1
+from resources import RESOURCES as ROUTES
+
 import json
+import re
 import requests
 
 DEFAULT_MAX_SERVER = 'http://localhost:8081'
@@ -10,6 +12,21 @@ DEFAULT_OAUTH_SERVER = 'https://oauth.upcnet.es'
 DEFAULT_SCOPE = 'widgetcli'
 DEFAULT_GRANT_TYPE = 'password'
 DEFAULT_CLIENT_ID = 'MAX'
+
+
+class ResourceVariableWrappers(object):
+    """
+        Container to all the defined variable wrappers
+    """
+    def _hash_(self, value):
+        """
+            Adapter to {hash} variable
+            Transforms any value into a hash, if it's not already a hash.
+        """
+        if re.match(r'^[0-9a-f]{40}$', value):
+            return value
+        else:
+            return sha1(value).hexdigest()
 
 
 class RequestError(Exception):
@@ -36,6 +53,10 @@ class Resource(object):
         return self.client.url + self.path
 
     def __getattr__(self, attr):
+        """
+            Returns a ResourceCollection  if the accessed attribute mathes
+            a valid point in the current routes map
+        """
         if attr in self.routes.keys():
             return ResourceCollection(self, attr)
         elif attr in ['get', 'post', 'put', 'delete', 'head']:
@@ -51,6 +72,10 @@ class ResourceCollection(Resource):
         return '<Lazy Resource Collection @ "{}">'.format(self.path)
 
     def __getitem__(self, key):
+        """
+            Returns a ResourceItem representing a Item on the collection
+        """
+
         return ResourceItem(self, key)
 
 
@@ -58,14 +83,33 @@ class ResourceItem(Resource):
     """
     """
 
+    wrappers = ResourceVariableWrappers()
+
     def __init__(self, parent, attr):
         self.parent = parent
         self.client = parent.client
-        self._name = attr
         self.rest_param = self.get_rest_param()
+        self._name = self.parse_rest_param(attr)
         self.routes = parent.routes[self.rest_param]
 
+    def parse_rest_param(self, value):
+        """
+            Transparently adapt values based on variable definitions
+            return raw value if no adapation defined for variable
+        """
+        wrapper_method_name = re.sub(r'{(.*?)}', r'_\1_', self.rest_param)
+        wrapper_method = getattr(self.wrappers, wrapper_method_name, None)
+        if wrapper_method_name is None:
+            return value
+        else:
+            return wrapper_method(value)
+
     def get_rest_param(self):
+        """
+            Searches for variable wrappers {varname} in the current level routes.
+            There should be only one available {varname} for each level, so first one is
+            returned, otherwise an exception is raised.
+        """
         resource_wrappers = [a for a in self.parent.routes.keys() if re.match(r'{.*?}', a)]
         if resource_wrappers:
             if len(resource_wrappers) != 1:
@@ -148,13 +192,16 @@ class MaxClient(RPCMaxClient):
             except:
                 raise RequestError("Server responded with error {}".format(response.status_code))
 
-
     @property
     def client(self):
         return self
 
     @property
     def routes(self):
+        """
+            Parses the endpoint list on ROUTES, and transforms it to be accessed dict-like
+            level by level.
+        """
         routes = {}
         for route_name, route in ROUTES.items():
             parts = route['route'].split('/')[1:]
@@ -165,6 +212,10 @@ class MaxClient(RPCMaxClient):
         return routes
 
     def __getattr__(self, attr):
+        """
+            Returns a ResourceCollection  if the accessed attribute mathes
+            a valid point in the current routes map
+        """
         if attr in self.routes.keys():
             return ResourceCollection(self, attr)
         return AttributeError('Resource not found "{}"'.format(attr))

@@ -112,6 +112,12 @@ If your requests needs query string parameters, you must feed them trough the ``
 
     >>> maxclient.people['carles.bruguera'].activities.get(qs={'limit': 1})
 
+
+And the last thing, if you need to upload a file, feed the file object or stream object trough the file_upload param as follows. Feed the raw open file, WITHOUT reading it, we need the object not the content of the file:
+
+    >>> avatar = open('/path/to/avatar.png', 'rb')
+    >>> maxclient.people['carles.bruguera'].avatar.post(upload_file=avatar)
+
 Maxclient will respond with the parsed json response of max when the request succedded, and will raise an RequestError exception in any other case, which message will indicate the reason of the error.
 
 

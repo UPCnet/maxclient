@@ -144,7 +144,7 @@ class MaxClient(RPCMaxClient):
         if self.debug:
             patch_send()
 
-    def _make_request_(self, resource, method_name, file_upload=None, data=None, qs=None, **kwargs):
+    def _make_request_(self, resource, method_name, upload_file=None, default_filename='file', data=None, qs=None, **kwargs):
         """
             Prepare call parameters  based on method_name, and
             make the appropiate call using requests.
@@ -174,8 +174,13 @@ class MaxClient(RPCMaxClient):
 
         # Add query to body only in this methods
         if method_name in ['post', 'put', 'delete']:
-            if file_upload:
-                method_kwargs['files'] = {'file': ('filename', file_upload)}
+            if upload_file is not None:
+                # Get name of open file, excluding path part,
+                # fallback to default if object has no name attribute (i.e StringIO)
+                # Finally feed file contents into request arguments
+                object_filename = getattr(upload_file, 'name', default_filename)
+                filename = re.match(r'^.*?/?([^\/]*$)', object_filename).groups()[0]
+                method_kwargs['files'] = {'file': (filename, upload_file.read())}
             else:
                 headers['content-type'] = 'application/json'
                 method_kwargs['data'] = json.dumps(query)

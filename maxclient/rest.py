@@ -1,8 +1,11 @@
 from client import MaxClient as RPCMaxClient
+from defaults import ENDPOINT_METHOD_DEFAULTS
 from functools import partial
 from hashlib import sha1
 from resources import RESOURCES as ROUTES
+from copy import deepcopy
 
+import httplib
 import json
 import re
 import requests
@@ -12,6 +15,19 @@ DEFAULT_OAUTH_SERVER = 'https://oauth.upcnet.es'
 DEFAULT_SCOPE = 'widgetcli'
 DEFAULT_GRANT_TYPE = 'password'
 DEFAULT_CLIENT_ID = 'MAX'
+
+
+def patch_send():
+    """
+        PATCH for allowing raw debugging of requests' requests
+    """
+    old_send = httplib.HTTPConnection.send
+
+    def new_send(self, data):
+        print '\n' + data + '\n'
+        return old_send(self, data)
+
+    httplib.HTTPConnection.send = new_send
 
 
 class ResourceVariableWrappers(object):
@@ -48,9 +64,17 @@ class Resource(object):
     def path(self):
         return '/'.join([self.parent.path, self._name])
 
+    def defaults(self, method):
+        default_name = '{}_{}'.format(self.route, method)
+        return ENDPOINT_METHOD_DEFAULTS.get(default_name, {})
+
     @property
     def uri(self):
         return self.client.url + self.path
+
+    @property
+    def route(self):
+        return '/'.join([self.parent.route, self._name])
 
     def __getattr__(self, attr):
         """
@@ -92,6 +116,10 @@ class ResourceItem(Resource):
         self._name = self.parse_rest_param(attr)
         self.routes = parent.routes[self.rest_param]
 
+    @property
+    def route(self):
+        return '/'.join([self.parent.route, self.rest_param])
+
     def parse_rest_param(self, value):
         """
             Transparently adapt values based on variable definitions
@@ -99,7 +127,7 @@ class ResourceItem(Resource):
         """
         wrapper_method_name = re.sub(r'{(.*?)}', r'_\1_', self.rest_param)
         wrapper_method = getattr(self.wrappers, wrapper_method_name, None)
-        if wrapper_method_name is None:
+        if wrapper_method is None:
             return value
         else:
             return wrapper_method(value)
@@ -124,8 +152,15 @@ class ResourceItem(Resource):
 class MaxClient(RPCMaxClient):
 
     path = ''
+    route = ''
 
-    def _make_request_(self, resource, method_name, data=None, **kwargs):
+    def __init__(self, *args, **kwargs):
+        super(MaxClient, self).__init__(*args, **kwargs)
+        self.debug = kwargs.get('debug', False)
+        if self.debug:
+            patch_send()
+
+    def _make_request_(self, resource, method_name, data=None, qs=None, **kwargs):
         """
             Prepare call parameters  based on method_name, and
             make the appropiate call using requests.
@@ -135,15 +170,15 @@ class MaxClient(RPCMaxClient):
         # User has provided us the constructed query
         if isinstance(data, list) or isinstance(data, dict):
             query = data
-        # Otherwise construct it from kwargs
+        # Otherwise construct it from kwargs, based on defaults (if any)
         else:
-            query = dict(kwargs)
+            query = deepcopy(resource.defaults(method_name))
+            query.update(kwargs)
 
         # Construct uri with optional query string
         uri = resource.uri
-        if 'qs' in kwargs:
-            uri = '{}?{}'.format(uri, kwargs['qs'])
-            del kwargs['qs']
+        if qs is not None:
+            uri = '{}?{}'.format(uri, qs)
 
         # Set default requests parameters
         headers = {'content-type': 'application/json'}

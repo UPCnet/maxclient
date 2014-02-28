@@ -21,7 +21,8 @@ class MaxClient(object):
                  auth_method='oauth2',
                  scope=DEFAULT_SCOPE,
                  grant_type=DEFAULT_GRANT_TYPE,
-                 client_id=DEFAULT_CLIENT_ID):
+                 client_id=DEFAULT_CLIENT_ID,
+                 **kwargs):
         """
         """
         #Strip ending slashes, as all routes begin with a slash

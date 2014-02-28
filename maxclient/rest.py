@@ -144,7 +144,7 @@ class MaxClient(RPCMaxClient):
         if self.debug:
             patch_send()
 
-    def _make_request_(self, resource, method_name, data=None, qs=None, **kwargs):
+    def _make_request_(self, resource, method_name, file_upload=None, data=None, qs=None, **kwargs):
         """
             Prepare call parameters  based on method_name, and
             make the appropiate call using requests.
@@ -165,7 +165,7 @@ class MaxClient(RPCMaxClient):
             uri = '{}?{}'.format(uri, urlencode(qs))
 
         # Set default requests parameters
-        headers = {'content-type': 'application/json'}
+        headers = {}
         headers.update(self.client.OAuth2AuthHeaders())
         method_kwargs = {
             'headers': headers,
@@ -174,8 +174,11 @@ class MaxClient(RPCMaxClient):
 
         # Add query to body only in this methods
         if method_name in ['post', 'put', 'delete']:
-            method_kwargs['data'] = json.dumps(query)
-
+            if file_upload:
+                method_kwargs['files'] = {'file': ('filename', file_upload)}
+            else:
+                headers['content-type'] = 'application/json'
+                method_kwargs['data'] = json.dumps(query)
         # call corresponding requests library method
         method = getattr(requests, method_name)
         response = method(uri, **method_kwargs)
@@ -200,7 +203,11 @@ class MaxClient(RPCMaxClient):
             if method_name == 'head':
                 return int(response.headers.get('X-totalItems', 0))
             else:
-                return response.json()
+                try:
+                    return response.json()
+                except:
+                    # post avatar currently returns 'Uploaded' plain text...
+                    return response.content
 
         # Everything else is treated as a max error response,
         # and so we expect to contain json, otherwise is an unknown error

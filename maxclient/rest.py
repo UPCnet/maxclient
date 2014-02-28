@@ -7,6 +7,7 @@ from maxclient.resources import RESOURCES as ROUTES
 from maxclient.utils import RUDict
 from maxclient.utils import expand
 from maxclient.utils import patch_send
+from urllib import urlencode
 
 import json
 import re
@@ -161,7 +162,7 @@ class MaxClient(RPCMaxClient):
         # Construct uri with optional query string
         uri = resource.uri
         if qs is not None:
-            uri = '{}?{}'.format(uri, qs)
+            uri = '{}?{}'.format(uri, urlencode(qs))
 
         # Set default requests parameters
         headers = {'content-type': 'application/json'}

@@ -108,6 +108,9 @@ That results in the following request body:
         "generator": "Twitter"
     }
 
+If your requests needs query string parameters, you must feed them trough the ``qs`` argument as a dict, and the key-value pairs will be urlencoded to a querystring, for example, to limit the results of the request with a  ``?limit01``: ::
+
+    >>> maxclient.people['carles.bruguera'].activities.get(qs={'limit': 1})
 
 Maxclient will respond with the parsed json response of max when the request succedded, and will raise an RequestError exception in any other case, which message will indicate the reason of the error.
 

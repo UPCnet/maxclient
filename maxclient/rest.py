@@ -126,6 +126,11 @@ class MaxClient(RPCMaxClient):
             except ValueError:
                 raise RequestError("Not Implemented: {} doesn't accept method {}".format(resource.uri, method_name))
 
+        # Some proxy lives between max and the client, and something went wrong
+        # on the backend site, probably max is stopped
+        elif response.status_code in [502]:
+            raise RequestError("Server {} responded with 502. Is max running?".format(self.url))
+
         # Successfull requests gets the json response in return
         # except HEAD ones, that gets the count
         elif response.status_code in [200, 201, 204]:
@@ -135,10 +140,14 @@ class MaxClient(RPCMaxClient):
                 return response.json()
 
         # Everything else is treated as a max error response,
-        # and so we expect to contain json
+        # and so we expect to contain json, otherwise is an unknown error
         else:
-            json_error = response.json()
-            raise RequestError("{error}: {error_description}".format(**json_error))
+            try:
+                json_error = response.json()
+                raise RequestError("{error}: {error_description}".format(**json_error))
+            except:
+                raise RequestError("Server responded with error {}".format(response.status_code))
+
 
     @property
     def client(self):

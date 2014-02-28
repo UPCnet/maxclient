@@ -72,7 +72,7 @@ a json will be generated from kwargs and sent in the request body: ::
         "displayName": "User Name"
     }
 
-if you want you can prepare a dict with all params that need to be in that json, and pass it throug the ``data`` argument, and the result will be the same. if data argument is present, all other kwargs are ignored: ::
+if you want you can prepare a dict with all params that need to be in that json, and pass it through the ``data`` argument, and the result will be the same. if data argument is present, all other kwargs are ignored: ::
 
     params = dict(displayName='User Name')
     maxclient.people['user.name'].post(data=params)

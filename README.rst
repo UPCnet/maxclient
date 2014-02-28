@@ -98,7 +98,7 @@ You can pass kwargs in the form key_subkey, and will be interpreted as nested ke
 
 >>> maxclient.people['user.name'].post(generator='Twitter', object_content='Hello world')
 
-That results in the following request body:
+That results in the following request body: ::
 
     {
         "object": {
@@ -113,7 +113,7 @@ If your requests needs query string parameters, you must feed them trough the ``
     >>> maxclient.people['carles.bruguera'].activities.get(qs={'limit': 1})
 
 
-And the last thing, if you need to upload a file, feed the file object or stream object trough the file_upload param as follows. Feed the raw open file, WITHOUT reading it, we need the object not the content of the file:
+And the last thing, if you need to upload a file, feed the file object or stream object trough the file_upload param as follows. Feed the raw open file, WITHOUT reading it, we need the object not the content of the file: ::
 
     >>> avatar = open('/path/to/avatar.png', 'rb')
     >>> maxclient.people['carles.bruguera'].avatar.post(upload_file=avatar)

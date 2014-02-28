@@ -1,33 +1,16 @@
-from client import MaxClient as RPCMaxClient
-from defaults import ENDPOINT_METHOD_DEFAULTS
+from copy import deepcopy
 from functools import partial
 from hashlib import sha1
-from resources import RESOURCES as ROUTES
-from copy import deepcopy
+from maxclient import MaxClient as RPCMaxClient
+from maxclient.defaults import ENDPOINT_METHOD_DEFAULTS
+from maxclient.resources import RESOURCES as ROUTES
+from maxclient.utils import RUDict
+from maxclient.utils import expand
+from maxclient.utils import patch_send
 
-import httplib
 import json
 import re
 import requests
-
-DEFAULT_MAX_SERVER = 'http://localhost:8081'
-DEFAULT_OAUTH_SERVER = 'https://oauth.upcnet.es'
-DEFAULT_SCOPE = 'widgetcli'
-DEFAULT_GRANT_TYPE = 'password'
-DEFAULT_CLIENT_ID = 'MAX'
-
-
-def patch_send():
-    """
-        PATCH for allowing raw debugging of requests' requests
-    """
-    old_send = httplib.HTTPConnection.send
-
-    def new_send(self, data):
-        print '\n' + data + '\n'
-        return old_send(self, data)
-
-    httplib.HTTPConnection.send = new_send
 
 
 class ResourceVariableWrappers(object):
@@ -169,11 +152,11 @@ class MaxClient(RPCMaxClient):
 
         # User has provided us the constructed query
         if isinstance(data, list) or isinstance(data, dict):
-            query = data
+            query = RUDict(data)
         # Otherwise construct it from kwargs, based on defaults (if any)
         else:
-            query = deepcopy(resource.defaults(method_name))
-            query.update(kwargs)
+            query = RUDict(deepcopy(resource.defaults(method_name)))
+            query.update(expand(kwargs))
 
         # Construct uri with optional query string
         uri = resource.uri
@@ -223,9 +206,10 @@ class MaxClient(RPCMaxClient):
         else:
             try:
                 json_error = response.json()
-                raise RequestError("{error}: {error_description}".format(**json_error))
+                error_message = "{error}: {error_description}".format(**json_error)
             except:
-                raise RequestError("Server responded with error {}".format(response.status_code))
+                error_message = "Server responded with error {}".format(response.status_code)
+            raise RequestError(error_message)
 
     @property
     def client(self):

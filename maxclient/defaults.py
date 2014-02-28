@@ -1,3 +1,3 @@
 ENDPOINT_METHOD_DEFAULTS = {
-    '/people/{username}/activities_post': {'objectType': 'note'}
+    '/people/{username}/activities_post': {'object': {'objectType': 'note'}}
 }

@@ -18,7 +18,18 @@ class ResourceVariableWrappers(object):
     """
         Container to all the defined variable wrappers
     """
-    def _hash_(self, value):
+
+    def _username_(self, resource, value):
+        """
+            Adapter to {username} variable
+            Transforms :me into the current authenticated username
+        """
+        if value == ':me':
+            return resource.client.actor['username']
+        else:
+            return value
+
+    def _hash_(self, resource, value):
         """
             Adapter to {hash} variable
             Transforms any value into a hash, if it's not already a hash.
@@ -114,7 +125,7 @@ class ResourceItem(Resource):
         if wrapper_method is None:
             return value
         else:
-            return wrapper_method(value)
+            return wrapper_method(self, value)
 
     def get_rest_param(self):
         """

@@ -2,6 +2,7 @@ PUBLIC_RESOURCES = {
     'users': {'route': '/people'},
     'user': {'route': '/people/{username}'},
     'avatar': {'route': '/people/{username}/avatar'},
+    'avatar_sizes': {'route': '/people/{username}/avatar/{size}'},
     'user_activities': {'route': '/people/{username}/activities'},
     'user_device': {'route': '/people/{username}/device/{platform}/{token}'},
 
@@ -27,6 +28,7 @@ PUBLIC_RESOURCES = {
     'context_user_permissions_defaults': {'route': '/contexts/{hash}/permissions/{username}/defaults'},
     'context_user_permission': {'route': '/contexts/{hash}/permissions/{username}/{permission}'},
     'context_activities': {'route': '/contexts/{hash}/activities'},
+    'context_comments': {'route': '/contexts/{hash}/comments'},
     'context_activities_authors': {'route': '/contexts/{hash}/activities/authors'},
     'context_subscriptions': {'route': '/contexts/{hash}/subscriptions'},
     'context_tags': {'route': '/contexts/{hash}/tags'},
@@ -71,6 +73,7 @@ RESTRICTED_RESOURCES = {
     'admin_security': {'route': '/admin/security'},
     'admin_security_role': {'route': '/admin/security/roles/{role}'},
     'admin_security_role_user': {'route': '/admin/security/roles/{role}/users/{user}'},
+    'admin_security_users': {'route': '/admin/security/users'},
     'maintenance_keywords': {'route': '/admin/maintenance/keywords'},
     'maintenance_dates': {'route': '/admin/maintenance/dates'},
     'maintenance_subscriptions': {'route': '/admin/maintenance/subscriptions'},

@@ -1,4 +1,6 @@
 PUBLIC_RESOURCES = {
+    'endpoints': {'route': '/endpoints'},
+
     'users': {'route': '/people'},
     'user': {'route': '/people/{username}'},
     'avatar': {'route': '/people/{username}/avatar'},

@@ -1,7 +1,7 @@
 from copy import deepcopy
 from functools import partial
 from hashlib import sha1
-from maxclient import MaxClient as RPCMaxClient
+from maxclient.client import BaseClient
 from maxclient.defaults import ENDPOINT_METHOD_DEFAULTS
 from maxclient.resources import RESOURCES as ROUTES
 from maxclient.utils import RUDict
@@ -144,7 +144,7 @@ class ResourceItem(Resource):
         return '<Lazy Resource Item @ {}>'.format(self.path)
 
 
-class MaxClient(RPCMaxClient):
+class MaxClient(BaseClient):
 
     path = ''
     route = ''

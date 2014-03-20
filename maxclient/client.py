@@ -1,7 +1,6 @@
 from hashlib import sha1
 import requests
 import json
-import urllib
 from resources import RESOURCES as ROUTES
 import getpass
 
@@ -12,8 +11,7 @@ DEFAULT_GRANT_TYPE = 'password'
 DEFAULT_CLIENT_ID = 'MAX'
 
 
-class MaxClient(object):
-
+class BaseClient(object):
     def __init__(self,
                  url=DEFAULT_MAX_SERVER,
                  oauth_server=DEFAULT_OAUTH_SERVER,
@@ -96,6 +94,9 @@ class MaxClient(object):
         """
         auth = (self.ba_username, self.ba_password)
         return auth
+
+
+class MaxClient(BaseClient):
 
     def HEAD(self, route, qs=''):
         """

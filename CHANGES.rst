@@ -1,11 +1,33 @@
 CHANGELOG
 ==========
 
-3.6.2 (unreleased)
+3.6.2 (2014-03-24)
 ------------------
 
-- Nothing changed yet.
-
+* Separate common features into BaseClient [Carles Bruguera]
+* Default for contexts [Victor Fernandez de Alba]
+* Update resources [Carles Bruguera]
+* Update resources [Carles Bruguera]
+* Updated resources from max [Carles Bruguera]
+* Wrapper for user [Carles Bruguera]
+* SYntax fix [Carles Bruguera]
+* upload file base on file object, not content [Carles Bruguera]
+* Add support to file uploads [Carles Bruguera]
+* Add support for dict-based query strings [Carles Bruguera]
+* Document variable pass syntax [Carles Bruguera]
+* Move helper methods to utils.py [Carles Bruguera]
+* expand key.subkey and key_subkey dict keys as nested dicts [Carles Bruguera]
+* Make dict updates recursive [Carles Bruguera]
+* Add defaults definition system [Carles Bruguera]
+* Add debug method for raw requests [Carles Bruguera]
+* Wrap non-hashes {hash} variables into hashes [Carles Bruguera]
+* Typo [Carles Bruguera]
+* Documentation [Carles Bruguera]
+* Catch bad gateway errors [Carles Bruguera]
+* Update resources definitions [Carles Bruguera]
+* First version of generic rest-like maxclient [Carles Bruguera]
+* Add getUser endpoint wrapper [Carles Bruguera]
+* Better bad password error [Carles Bruguera]
 
 3.6.1 (2014-02-24)
 ------------------

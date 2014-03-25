@@ -1,11 +1,10 @@
 CHANGELOG
 ==========
 
-3.6.3 (unreleased)
+3.6.3 (2014-03-25)
 ------------------
 
-- Nothing changed yet.
-
+* Updated use case HEAD returning 404 and returning as it's not implemented when in fact, it is but simply the resource does not exist. [Victor Fernandez de Alba]
 
 3.6.2 (2014-03-24)
 ------------------

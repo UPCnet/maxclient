@@ -203,10 +203,19 @@ class MaxClient(BaseClient):
         # 404 responses caused by unimplemented methods, raise an exception
         if response.status_code in [404]:
             try:
-                response.json()
-                return None
+                return response.json()
             except ValueError:
-                raise RequestError("Not Implemented: {} doesn't accept method {}".format(resource.uri, method_name))
+                # In case that we are accessing to an non existing resource, not
+                # to a not implemented method thus the return is 404 legitimate,
+                # and we need to inform of it
+                if method_name == 'head':
+                    method = getattr(requests, 'get')
+                    response = method(uri, **method_kwargs)
+                    json_error = response.json()
+                    error_message = "{error}: {error_description}".format(**json_error)
+                    raise RequestError(error_message)
+                else:
+                    raise RequestError("Not Implemented: {} doesn't accept method {}".format(resource.uri, method_name))
 
         # Some proxy lives between max and the client, and something went wrong
         # on the backend site, probably max is stopped

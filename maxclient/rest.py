@@ -71,6 +71,9 @@ class Resource(object):
     def route(self):
         return '/'.join([self.parent.route, self._name])
 
+    def __call__(self):
+        return self.get()
+
     def __getattr__(self, attr):
         """
             Returns a ResourceCollection  if the accessed attribute mathes
@@ -155,6 +158,13 @@ class MaxClient(BaseClient):
         if self.debug:
             patch_send()
 
+    def do_request(self, method_name, uri, params):
+        method = getattr(requests, method_name)
+        return method(uri, **params)
+
+    def response_content(self, response):
+        return response.content
+
     def _make_request_(self, resource, method_name, upload_file=None, default_filename='file', data=None, qs=None, **kwargs):
         """
             Prepare call parameters  based on method_name, and
@@ -195,9 +205,8 @@ class MaxClient(BaseClient):
             else:
                 headers['content-type'] = 'application/json'
                 method_kwargs['data'] = json.dumps(query)
-        # call corresponding requests library method
-        method = getattr(requests, method_name)
-        response = method(uri, **method_kwargs)
+        # call corresponding request method
+        response = self.do_request(method_name, uri, method_kwargs)
 
         # Legitimate max 404 NotFound responses get a None in response
         # 404 responses caused by unimplemented methods, raise an exception
@@ -232,7 +241,7 @@ class MaxClient(BaseClient):
                     return response.json()
                 except:
                     # post avatar currently returns 'Uploaded' plain text...
-                    return response.content
+                    return self.response_content(response)
 
         # Everything else is treated as a max error response,
         # and so we expect to contain json, otherwise is an unknown error

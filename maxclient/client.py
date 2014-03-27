@@ -14,7 +14,7 @@ DEFAULT_CLIENT_ID = 'MAX'
 class BaseClient(object):
     def __init__(self,
                  url=DEFAULT_MAX_SERVER,
-                 oauth_server=DEFAULT_OAUTH_SERVER,
+                 oauth_server=None,
                  actor=None,
                  auth_method='oauth2',
                  scope=DEFAULT_SCOPE,
@@ -25,12 +25,18 @@ class BaseClient(object):
         """
         #Strip ending slashes, as all routes begin with a slash
         self.url = url.rstrip('/')
-        self.oauth_server = oauth_server.rstrip('/')
+        self.oauth_server = oauth_server
+        if self.oauth_server is not None:
+            self.oauth_server = self.oauth_server.rstrip('/')
         self.setActor(actor)
         self.auth_method = auth_method
         self.scope = scope
         self.grant_type = grant_type
         self.client_id = client_id
+
+    def set_oauth_server_from_max(self):
+        response = requests.get('{}/info'.format(self.url), verify=False)
+        self.oauth_server = response.json()['max.oauth_server']
 
     def login(self, username='', password=False):
         if not username:
@@ -42,6 +48,9 @@ class BaseClient(object):
         return self.getToken(username, password)
 
     def getToken(self, username, password):
+        if self.oauth_server is None:
+            self.set_oauth_server_from_max()
+
         payload = {"grant_type": self.grant_type,
                    "client_id": self.client_id,
                    "scope": self.scope,
@@ -52,15 +61,15 @@ class BaseClient(object):
         req = requests.post('{0}/token'.format(self.oauth_server), data=payload, verify=False)
         response = json.loads(req.text)
         if req.status_code == 200:
-            self.token = response.get("access_token", False)
+            self.setToken(response.get("access_token", False))
             # Fallback to legacy oauth server
             if not self.token:
-                self.token = response.get("oauth_token")
+                self.setToken(response.get("oauth_token"))
             return self.token
         else:
             raise AttributeError("""Bad username or password.
                 Oauth server = {}
-                Max Server = {}""".format(self.url, self.oauth_server))
+                Max Server = {}""".format(self.oauth_server, self.url))
 
     def getActor(self):
         return self.actor.get('username', '')
@@ -71,6 +80,9 @@ class BaseClient(object):
     def setToken(self, oauth2_token):
         """
         """
+        if self.oauth_server is None:
+            self.set_oauth_server_from_max()
+
         self.token = oauth2_token
 
     def setBasicAuth(self, username, password):
@@ -83,9 +95,9 @@ class BaseClient(object):
         """
         """
         headers = {
-            'X-Oauth-Token': self.token,
-            'X-Oauth-Username': self.actor['username'],
-            'X-Oauth-Scope': self.scope,
+            'X-Oauth-Token': str(self.token),
+            'X-Oauth-Username': str(self.actor['username']),
+            'X-Oauth-Scope': str(self.scope),
         }
         return headers
 
@@ -654,6 +666,7 @@ class MaxClient(BaseClient):
         return response
 
     def getSecurity(self):
+        import ipdb;ipdb.set_trace()
         route = ROUTES['admin_security']['route']
         resource_uri = '%s%s' % (self.url, route)
         req = requests.get(resource_uri, verify=False)

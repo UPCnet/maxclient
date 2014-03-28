@@ -12,6 +12,7 @@ from urllib import urlencode
 import json
 import re
 import requests
+import json
 
 
 class ResourceVariableWrappers(object):
@@ -82,6 +83,9 @@ class Resource(object):
         if attr in self.routes.keys():
             return ResourceCollection(self, attr)
         elif attr in ['get', 'post', 'put', 'delete', 'head']:
+            # Returns a prefilled _make_request_ with the resource and method
+            # The resulting function will be the one that the client will fill
+            # with request parameters
             return partial(self.client._make_request_, self, attr)
         return AttributeError("Resource not found {}".format(attr))
 
@@ -158,7 +162,7 @@ class MaxClient(BaseClient):
         if self.debug:
             patch_send()
 
-    def do_request(self, method_name, uri, params):
+    def do_request(self, route, method_name, uri, params):
         method = getattr(requests, method_name)
         return method(uri, **params)
 
@@ -206,13 +210,13 @@ class MaxClient(BaseClient):
                 headers['content-type'] = 'application/json'
                 method_kwargs['data'] = json.dumps(query)
         # call corresponding request method
-        response = self.do_request(method_name, uri, method_kwargs)
+        response = self.do_request(resource.route, method_name, uri, method_kwargs)
 
         # Legitimate max 404 NotFound responses get a None in response
         # 404 responses caused by unimplemented methods, raise an exception
         if response.status_code in [404]:
             try:
-                return response.json()
+                return json.loads(self.response_content(response))
             except ValueError:
                 # In case that we are accessing to an non existing resource, not
                 # to a not implemented method thus the return is 404 legitimate,
@@ -220,7 +224,7 @@ class MaxClient(BaseClient):
                 if method_name == 'head':
                     method = getattr(requests, 'get')
                     response = method(uri, **method_kwargs)
-                    json_error = response.json()
+                    json_error = json.loads(self.response_content(response))
                     error_message = "{error}: {error_description}".format(**json_error)
                     raise RequestError(error_message)
                 else:
@@ -238,7 +242,7 @@ class MaxClient(BaseClient):
                 return int(response.headers.get('X-totalItems', 0))
             else:
                 try:
-                    return response.json()
+                    return json.loads(self.response_content(response))
                 except:
                     # post avatar currently returns 'Uploaded' plain text...
                     return self.response_content(response)
@@ -247,7 +251,7 @@ class MaxClient(BaseClient):
         # and so we expect to contain json, otherwise is an unknown error
         else:
             try:
-                json_error = response.json()
+                json_error = json.loads(self.response_content(response))
                 error_message = "{error}: {error_description}".format(**json_error)
             except:
                 error_message = "Server responded with error {}".format(response.status_code)
@@ -256,6 +260,12 @@ class MaxClient(BaseClient):
     @property
     def client(self):
         return self
+
+    def getRoute(self, path):
+        for route_name, route in ROUTES.items():
+            if path == route['route']:
+                return route
+        return {}
 
     @property
     def routes(self):

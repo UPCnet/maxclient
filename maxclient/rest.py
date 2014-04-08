@@ -44,6 +44,9 @@ class ResourceVariableWrappers(object):
 class RequestError(Exception):
     """
     """
+    def __init__(self, code, *args, **kwargs):
+        super(RequestError, self).__init__(*args, **kwargs)
+        self.code = code
 
 
 class Resource(object):
@@ -226,14 +229,14 @@ class MaxClient(BaseClient):
                     response = method(uri, **method_kwargs)
                     json_error = json.loads(self.response_content(response))
                     error_message = "{error}: {error_description}".format(**json_error)
-                    raise RequestError(error_message)
+                    raise RequestError(404, error_message)
                 else:
-                    raise RequestError("Not Implemented: {} doesn't accept method {}".format(resource.uri, method_name))
+                    raise RequestError(404, "Not Implemented: {} doesn't accept method {}".format(resource.uri, method_name))
 
         # Some proxy lives between max and the client, and something went wrong
         # on the backend site, probably max is stopped
         elif response.status_code in [502]:
-            raise RequestError("Server {} responded with 502. Is max running?".format(self.url))
+            raise RequestError(502, "Server {} responded with 502. Is max running?".format(self.url))
 
         # Successfull requests gets the json response in return
         # except HEAD ones, that gets the count
@@ -255,7 +258,7 @@ class MaxClient(BaseClient):
                 error_message = "{error}: {error_description}".format(**json_error)
             except:
                 error_message = "Server responded with error {}".format(response.status_code)
-            raise RequestError(error_message)
+            raise RequestError(response.status_code, error_message)
 
     @property
     def client(self):

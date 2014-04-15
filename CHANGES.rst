@@ -1,11 +1,18 @@
 CHANGELOG
 ==========
 
-3.6.4 (unreleased)
+4.0.0 (2014-04-15)
 ------------------
 
-- Nothing changed yet.
-
+* Fix wrong default [Carles Bruguera]
+* Add some defaults [Carles Bruguera]
+* Update resources from max [Carles Bruguera]
+* Include http response code on exception [Carles Bruguera]
+* Add defaults for posting a conversation message [Carles Bruguera]
+* Use a app wrapper for requests on wsgi client [Carles Bruguera]
+* Add wsgi version of maxclient [sunbit]
+* Fetch oauth server from max info endpoint if not provided [sunbit]
+* Add license [Victor Fernandez de Alba]
 
 3.6.3 (2014-03-25)
 ------------------

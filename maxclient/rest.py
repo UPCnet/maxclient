@@ -12,7 +12,6 @@ from urllib import urlencode
 import json
 import re
 import requests
-import json
 
 
 class ResourceVariableWrappers(object):
@@ -153,6 +152,12 @@ class ResourceItem(Resource):
     def __repr__(self):
         return '<Lazy Resource Item @ {}>'.format(self.path)
 
+    def __getitem__(self, key):
+        """
+            Returns a ResourceItem representing a Item on the Item
+        """
+
+        return ResourceItem(self, key)
 
 class MaxClient(BaseClient):
 
@@ -178,10 +183,13 @@ class MaxClient(BaseClient):
             make the appropiate call using requests.
             Responses with an error will raise an exception
         """
-
         # User has provided us the constructed query
-        if isinstance(data, list) or isinstance(data, dict):
-            query = RUDict(data)
+        if data is not None:
+            if isinstance(data, dict):
+                query = RUDict(data)
+            else:
+                query = data
+
         # Otherwise construct it from kwargs, based on defaults (if any)
         else:
             query = RUDict(deepcopy(resource.defaults(method_name)))

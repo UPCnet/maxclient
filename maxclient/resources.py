@@ -29,6 +29,7 @@ PUBLIC_RESOURCES = {
     'context_user_permissions_defaults': {'route': '/contexts/{hash}/permissions/{username}/defaults', 'category': 'Contexts', 'name': 'Context permissions defaults'},
     'context_user_permission': {'route': '/contexts/{hash}/permissions/{username}/{permission}', 'category': 'Contexts', 'name': 'Context permission'},
     'context_activities': {'route': '/contexts/{hash}/activities', 'category': 'Activities', 'name': 'Context activities'},
+    'context_push_tokens': {'route': '/contexts/{hash}/tokens', 'category': 'Contexts', 'name': 'Context tokens'},
     'context_comments': {'route': '/contexts/{hash}/comments', 'category': 'Comments', 'name': 'Context comments'},
     'context_activities_authors': {'route': '/contexts/{hash}/activities/authors', 'category': 'Activities', 'name': 'Context authors'},
     'context_subscriptions': {'route': '/contexts/{hash}/subscriptions', 'category': 'Contexts', 'name': 'Users subscribed to context'},
@@ -53,7 +54,10 @@ PUBLIC_RESOURCES = {
     'favorites': {'route': '/activities/{activity}/favorites', 'category': 'Activities'},
     'favorite': {'route': '/activities/{activity}/favorites/{username}', 'category': 'Activities'},
     'user_favorites': {'route': '/people/{username}/favorites', 'category': 'User', 'name': 'User favorited activities'},
-
+    'image': {'route': '/activities/{activity}/image', 'category': 'Activities'},
+    'image_full': {'route': '/activities/{activity}/image/full', 'category': 'Activities'},
+    'image_thumbnail': {'route': '/activities/{activity}/image/thumb', 'category': 'Activities'},
+    'file_download': {'route': '/activities/{activity}/file/download', 'category': 'Activities'},
 
     # MAX 4.0
     'user_shares': {'route': '/people/{username}/shares'},

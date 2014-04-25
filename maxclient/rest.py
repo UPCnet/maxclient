@@ -159,6 +159,7 @@ class ResourceItem(Resource):
 
         return ResourceItem(self, key)
 
+
 class MaxClient(BaseClient):
 
     path = ''
@@ -177,12 +178,25 @@ class MaxClient(BaseClient):
     def response_content(self, response):
         return response.content
 
-    def _make_request_(self, resource, method_name, upload_file=None, default_filename='file', data=None, qs=None, **kwargs):
+    def _make_request_(self, resource, method_name, default_filename='file', data=None, qs=None, **kwargs):
         """
             Prepare call parameters  based on method_name, and
             make the appropiate call using requests.
             Responses with an error will raise an exception
         """
+        #extract file uploads from kwargs
+        file_uploads = []
+        for k, v in kwargs.items():
+            is_upload_file = re.match(r'^upload_file_?(\w*)$', k)
+            if is_upload_file:
+                captured_form_file_id = is_upload_file.groups()[0]
+                form_file_id = captured_form_file_id if captured_form_file_id else 'file'
+                file_uploads.append({
+                    'form_file_id': form_file_id,
+                    'file': v
+                })
+                del kwargs[k]
+
         # User has provided us the constructed query
         if data is not None:
             if isinstance(data, dict):
@@ -209,14 +223,20 @@ class MaxClient(BaseClient):
         }
 
         # Add query to body only in this methods
+
         if method_name in ['post', 'put', 'delete']:
-            if upload_file is not None:
-                # Get name of open file, excluding path part,
-                # fallback to default if object has no name attribute (i.e StringIO)
-                # Finally feed file contents into request arguments
-                object_filename = getattr(upload_file, 'name', default_filename)
-                filename = re.match(r'^.*?/?([^\/]*$)', object_filename).groups()[0]
-                method_kwargs['files'] = {'file': (filename, upload_file.read())}
+            if file_uploads:
+                method_kwargs['files'] = {}
+                for file_upload in file_uploads:
+                    # Get name of open file, excluding path part,
+                    # fallback to default if object has no name attribute (i.e StringIO)
+                    # Finally feed file contents into request arguments
+                    object_filename = getattr(file_upload['file'], 'name', default_filename)
+                    filename = re.match(r'^.*?/?([^\/]*$)', object_filename).groups()[0]
+                    method_kwargs['files'][file_upload['form_file_id']] = (filename, file_upload['file'].read())
+                if query:
+                    method_kwargs['data'] = {'json_data': json.dumps(query)}
+
             else:
                 headers['content-type'] = 'application/json'
                 method_kwargs['data'] = json.dumps(query)

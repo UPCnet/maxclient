@@ -242,7 +242,7 @@ class MaxClient(BaseClient):
                 method_kwargs['data'] = json.dumps(query)
         # call corresponding request method
         response = self.do_request(resource.route, method_name, uri, method_kwargs)
-        
+
         # Legitimate max 404 NotFound responses get a None in response
         # 404 responses caused by unimplemented methods, raise an exception
         if response.status_code in [404]:

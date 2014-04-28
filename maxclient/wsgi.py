@@ -62,8 +62,11 @@ class MaxClient(RestClient):
         return self.app
 
     def do_request(self, route, method_name, uri, params):
-        # Delegate filesystem dependant endpoints to the fallback rest client
-        if self.getRoute(route).get('filesystem', False):
+        """
+            If request contains files to upload, delegate call
+            to the fallback rest client
+        """
+        if params.get('files', {}):
             return self.rest.do_request(route, method_name, self.rest.url + uri, params)
 
         method = getattr(self.requester, method_name)

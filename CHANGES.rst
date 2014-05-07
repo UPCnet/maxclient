@@ -1,11 +1,17 @@
 CHANGELOG
 ==========
 
-4.0.1 (unreleased)
+4.0.1 (2014-05-07)
 ------------------
 
-- Nothing changed yet.
-
+* Updated resources [Carles Bruguera]
+* Identify filesystem resources based on presence of files in request [Carles Bruguera]
+* Don't return on try [Carles Bruguera]
+* Allow multiple upload_files specifying id [Carles Bruguera]
+* include json data as json_data in multipart paylod [Carles Bruguera]
+* Allow ResourceItems in ResourceItems [Carles Bruguera]
+* Don't treat list content on data param as dicts (...) [Carles Bruguera]
+* Update defaults and resources list [Carles Bruguera]
 
 4.0.0 (2014-04-15)
 ------------------

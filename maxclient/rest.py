@@ -167,6 +167,9 @@ class MaxClient(BaseClient):
 
     def __init__(self, *args, **kwargs):
         super(MaxClient, self).__init__(*args, **kwargs)
+        self.last_response = None
+        self.last_response_code = None
+
         self.debug = kwargs.get('debug', False)
         if self.debug:
             patch_send()
@@ -243,12 +246,19 @@ class MaxClient(BaseClient):
         # call corresponding request method
         response = self.do_request(resource.route, method_name, uri, method_kwargs)
 
+        # Save response status to be able to query on succesfull responses
+        self.last_response = self.response_content(response)
+        self.last_response_code = response.status_code
+
         # Legitimate max 404 NotFound responses get a None in response
         # 404 responses caused by unimplemented methods, raise an exception
         if response.status_code in [404]:
             try:
                 response_text = self.response_content(response)
-                error = json.loads(response_text)
+                json.loads(response_text)
+                if self.debug:
+                    print response_text
+                return None
             except ValueError:
                 # In case that we are accessing to an non existing resource, not
                 # to a not implemented method thus the return is 404 legitimate,

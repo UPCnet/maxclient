@@ -51,6 +51,7 @@ class MaxClient(RestClient):
         self.rest.actor = self.actor
         self.rest.token = self.token
         self.settings = self.rest.info.settings.get()
+        self.settings['max.include_traceback_in_500_errors'] = True
 
         # Reset url after modification, to make requests trough the wsgi app
         self.url = ''
@@ -58,7 +59,7 @@ class MaxClient(RestClient):
     @property
     def requester(self):
         if self.app is None:
-            self.app = RequesterApp(main({}, **self.rest.info.settings()))
+            self.app = RequesterApp(main({}, **self.settings))
         return self.app
 
     def do_request(self, route, method_name, uri, params):

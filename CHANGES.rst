@@ -1,11 +1,12 @@
 CHANGELOG
 ==========
 
-4.0.2 (unreleased)
+4.0.2 (2014-05-28)
 ------------------
 
-- Nothing changed yet.
-
+* Merge branch 'develop' of github.com:UPCnet/maxclient into develop [Carles Bruguera]
+* Save last response status [Carles Bruguera]
+* Configure max instance to log tracebacks on exceptions [Carles Bruguera]
 
 4.0.1 (2014-05-07)
 ------------------

@@ -1,11 +1,10 @@
 CHANGELOG
 ==========
 
-4.0.3 (unreleased)
+4.0.3 (2014-07-08)
 ------------------
 
-- Nothing changed yet.
-
+* Update defaults [Carles Bruguera]
 
 4.0.2 (2014-05-28)
 ------------------

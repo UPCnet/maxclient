@@ -270,7 +270,11 @@ class MaxClient(BaseClient):
                     error_message = "{error}: {error_description}".format(**json_error)
                     raise RequestError(404, error_message)
                 else:
-                    raise RequestError(404, "Not Implemented: {} doesn't accept method {}".format(resource.uri, method_name))
+                    restricted_permissions = re.search(r"restricted permissions to = (\w+)", self.response_content(response), re.IGNORECASE)
+                    if restricted_permissions:
+                        raise RequestError(404, "Not Implemented for current user role: {} restricted to {}".format(resource.uri, restricted_permissions.groups()[0]))
+                    else:
+                        raise RequestError(404, "Not Implemented: {} doesn't accept method {}".format(resource.uri, method_name))
 
         # Some proxy lives between max and the client, and something went wrong
         # on the backend site, probably max is stopped

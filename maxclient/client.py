@@ -61,10 +61,14 @@ class BaseClient(object):
         req = requests.post('{0}/token'.format(self.oauth_server), data=payload, verify=False)
         response = json.loads(req.text)
         if req.status_code == 200:
-            self.setToken(response.get("access_token", False))
+            token = response.get("access_token", None)
+            if token:
+                self.setToken(token)
+            elif response.get("oauth_token", None):
             # Fallback to legacy oauth server
-            if not self.token:
                 self.setToken(response.get("oauth_token"))
+            else:
+                raise AttributeError('No token found in response')
             return self.token
         else:
             raise AttributeError("""Bad username or password.
@@ -666,7 +670,6 @@ class MaxClient(BaseClient):
         return response
 
     def getSecurity(self):
-        import ipdb;ipdb.set_trace()
         route = ROUTES['admin_security']['route']
         resource_uri = '%s%s' % (self.url, route)
         req = requests.get(resource_uri, verify=False)

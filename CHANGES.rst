@@ -1,11 +1,12 @@
 CHANGELOG
 ==========
 
-4.0.5 (unreleased)
+4.0.5 (2014-11-25)
 ------------------
 
-- Nothing changed yet.
-
+* Fix wsgi client with legacy oauth [Carles Bruguera]
+* Fine tune 404 errors [Carles Bruguera]
+* More defaults [Carles Bruguera]
 
 4.0.4 (2014-07-16)
 ------------------

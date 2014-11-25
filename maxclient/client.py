@@ -33,10 +33,15 @@ class BaseClient(object):
         self.scope = scope
         self.grant_type = grant_type
         self.client_id = client_id
+        self.metadata = {}
+
+    @property
+    def server_info(self):
+        response = requests.get('{}/info'.format(self.url), verify=False)
+        return response.json()
 
     def set_oauth_server_from_max(self):
-        response = requests.get('{}/info'.format(self.url), verify=False)
-        self.oauth_server = response.json()['max.oauth_server']
+        self.oauth_server = self.server_info['max.oauth_server']
 
     def login(self, username='', password=False):
         if not username:

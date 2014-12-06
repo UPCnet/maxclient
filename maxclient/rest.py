@@ -2,6 +2,7 @@ from copy import deepcopy
 from functools import partial
 from hashlib import sha1
 from maxclient.client import BaseClient
+from maxclient.client import RequestError
 from maxclient.defaults import ENDPOINT_METHOD_DEFAULTS
 from maxclient.resources import RESOURCES as ROUTES
 from maxclient.utils import RUDict
@@ -38,14 +39,6 @@ class ResourceVariableWrappers(object):
             return value
         else:
             return sha1(value).hexdigest()
-
-
-class RequestError(Exception):
-    """
-    """
-    def __init__(self, code, *args, **kwargs):
-        super(RequestError, self).__init__(*args, **kwargs)
-        self.code = code
 
 
 class Resource(object):

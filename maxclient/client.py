@@ -11,6 +11,14 @@ DEFAULT_GRANT_TYPE = 'password'
 DEFAULT_CLIENT_ID = 'MAX'
 
 
+class RequestError(Exception):
+    """
+    """
+    def __init__(self, code, *args, **kwargs):
+        super(RequestError, self).__init__(*args, **kwargs)
+        self.code = code
+
+
 class BaseClient(object):
     def __init__(self,
                  url=DEFAULT_MAX_SERVER,
@@ -38,7 +46,12 @@ class BaseClient(object):
     @property
     def server_info(self):
         response = requests.get('{}/info'.format(self.url), verify=False)
-        return response.json()
+        if response.status_code == 502:
+            raise RequestError(502, "Server {} responded with 502. Is max running?".format(self.url))
+        if response.status_code == 500:
+            raise RequestError(500, "Server {} failed with 500 Internal Error".format(self.url))
+        elif response.status_code == 200:
+            return response.json()
 
     def set_oauth_server_from_max(self):
         self.oauth_server = self.server_info['max.oauth_server']

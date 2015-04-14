@@ -13,7 +13,7 @@ requires = [
 wsgi_requires = ['max', 'WebTest']
 
 setup(name='maxclient',
-      version='4.0.7.dev0',
+      version='4.0.7',
       description='Client library wrapper to access MAX API.',
       long_description=README + '\n\n' + CHANGES,
       classifiers=[

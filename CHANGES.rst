@@ -1,11 +1,11 @@
 CHANGELOG
 ==========
 
-4.0.7 (unreleased)
+4.0.7 (2015-04-14)
 ------------------
 
-- Nothing changed yet.
-
+* Add default for user subscription [Carles Bruguera]
+* Raise exception on server info get failure [Carles Bruguera]
 
 4.0.6 (2014-11-25)
 ------------------

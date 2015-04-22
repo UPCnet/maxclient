@@ -6,6 +6,7 @@ import getpass
 
 DEFAULT_MAX_SERVER = 'http://localhost:8081'
 DEFAULT_OAUTH_SERVER = 'https://oauth.upcnet.es'
+DEFAULT_HUB_SERVER = 'https://hub.ulearn.upcnet.es'
 DEFAULT_SCOPE = 'widgetcli'
 DEFAULT_GRANT_TYPE = 'password'
 DEFAULT_CLIENT_ID = 'MAX'
@@ -17,6 +18,23 @@ class RequestError(Exception):
     def __init__(self, code, *args, **kwargs):
         super(RequestError, self).__init__(*args, **kwargs)
         self.code = code
+
+BAD_PWD_MSG = """
+Bad username or password.
+   Oauth server = {}
+   Max Server = {}"""
+
+
+class BadUsernameOrPasswordError(Exception):
+    def __init__(self, oauthserver, maxserver, username, password, *args, **kwargs):
+        self.username = username
+        self.password = password
+
+        super(BadUsernameOrPasswordError, self).__init__(
+            BAD_PWD_MSG.format(oauthserver, maxserver),
+            *args,
+            **kwargs
+        )
 
 
 class BaseClient(object):
@@ -42,25 +60,74 @@ class BaseClient(object):
         self.grant_type = grant_type
         self.client_id = client_id
         self.metadata = {}
+        self.__server_info__ = None
+
+    @classmethod
+    def from_hub_domain(cls, domain, hub=DEFAULT_HUB_SERVER, *args, **kwargs):
+        try:
+            response = requests.get('{}/info'.format(hub), verify=False)
+        except requests.exceptions.ConnectionError:
+            raise RequestError(0, "Server {} did not respond. Is this a valid hub url?".format(hub))
+
+        if response.status_code == 502:
+            raise RequestError(502, "Server {} responded with 502. Is hub running?".format(hub))
+        if response.status_code == 500:
+            raise RequestError(500, "Server {} failed with 500 Internal Error".format(hub))
+        elif response.status_code == 200:
+            hub_info = response.json()
+            default_maxserver = hub_info.get('default_maxserver_url', None)
+
+            # If domain is defined, get the maxserver url
+            if domain in hub_info.get('domains', {}):
+                max_server_url = hub_info['domains'][domain]['max_server_url']
+
+            # If domain is not defined and we have a default
+            elif default_maxserver:
+                max_server_url = '{}/{}'.format(default_maxserver, domain)
+
+            # We have neither of domain or default defined
+            else:
+                raise Exception("There's no domain {} on {}".format(domain, hub))
+
+            # We have a max url, let's check if its good
+            try:
+                client = cls(max_server_url, *args, **kwargs)
+                client.set_oauth_server_from_max()
+            except RequestError as exc:
+                if exc.code == 0:
+                    raise Exception("No maxserver found on {}".format(max_server_url))
+                else:
+                    raise exc
+
+            return client
 
     @property
     def server_info(self):
-        response = requests.get('{}/info'.format(self.url), verify=False)
-        if response.status_code == 502:
-            raise RequestError(502, "Server {} responded with 502. Is max running?".format(self.url))
-        if response.status_code == 500:
-            raise RequestError(500, "Server {} failed with 500 Internal Error".format(self.url))
-        elif response.status_code == 200:
-            return response.json()
+        if self.__server_info__ is None:
+            try:
+                response = requests.get('{}/info'.format(self.url), verify=False)
+            except requests.exceptions.ConnectionError:
+                raise RequestError(0, "Server {} did not respond. Is this a valid max url?".format(self.url))
+
+            if response.status_code == 502:
+                raise RequestError(502, "Server {} responded with 502. Is max running?".format(self.url))
+            if response.status_code == 500:
+                raise RequestError(500, "Server {} failed with 500 Internal Error".format(self.url))
+
+            elif response.status_code == 200:
+                self.__server_info__ = response.json()
+
+        return self.__server_info__
 
     def set_oauth_server_from_max(self):
         self.oauth_server = self.server_info['max.oauth_server']
 
-    def login(self, username='', password=False):
-        if not username:
+    def login(self, username=None, password=None):
+        if username is None:
             username = raw_input("Username: ")
-        if not password:
-            password = getpass.getpass()
+        if password is None:
+            message = 'Password for {}: '.format(username)
+            password = getpass.getpass(message)
 
         self.setActor(username)
         return self.getToken(username, password)
@@ -68,6 +135,9 @@ class BaseClient(object):
     def getToken(self, username, password):
         if self.oauth_server is None:
             self.set_oauth_server_from_max()
+
+        # Set password to None if evaluates to False
+        password = password if password else None
 
         payload = {"grant_type": self.grant_type,
                    "client_id": self.client_id,
@@ -77,6 +147,7 @@ class BaseClient(object):
                    }
 
         req = requests.post('{0}/token'.format(self.oauth_server), data=payload, verify=False)
+
         response = json.loads(req.text)
         if req.status_code == 200:
             token = response.get("access_token", None)
@@ -89,9 +160,12 @@ class BaseClient(object):
                 raise AttributeError('No token found in response')
             return self.token
         else:
-            raise AttributeError("""Bad username or password.
-                Oauth server = {}
-                Max Server = {}""".format(self.oauth_server, self.url))
+            raise BadUsernameOrPasswordError(
+                oauthserver=self.oauth_server,
+                maxserver=self.url,
+                username=username,
+                password=password
+            )
 
     def getActor(self):
         return self.actor.get('username', '')

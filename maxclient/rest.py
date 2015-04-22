@@ -57,7 +57,7 @@ class Resource(object):
 
     def defaults(self, method):
         default_name = '{}_{}'.format(self.route, method)
-        return ENDPOINT_METHOD_DEFAULTS.get(default_name, {})
+        return self.client.__defaults__.get(default_name, {})
 
     @property
     def uri(self):
@@ -155,6 +155,8 @@ class ResourceItem(Resource):
 
 class MaxClient(BaseClient):
 
+    __routes__ = ROUTES
+    __defaults__ = ENDPOINT_METHOD_DEFAULTS
     path = ''
     route = ''
 
@@ -301,7 +303,7 @@ class MaxClient(BaseClient):
         return self
 
     def getRoute(self, path):
-        for route_name, route in ROUTES.items():
+        for route_name, route in self.__routes__.items():
             if path == route['route']:
                 return route
         return {}
@@ -313,7 +315,7 @@ class MaxClient(BaseClient):
             level by level.
         """
         routes = {}
-        for route_name, route in ROUTES.items():
+        for route_name, route in self.__routes__.items():
             parts = route['route'].split('/')[1:]
             last_path = routes
             for part in parts:

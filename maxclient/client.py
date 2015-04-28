@@ -118,8 +118,7 @@ class BaseClient(object):
 
     @classmethod
     def from_hub_domain(cls, domain, hub=DEFAULT_HUB_SERVER, *args, **kwargs):
-        hub_info = get_hub_info(hub)
-        max_server_url = cls._max_url_from_hub_domain(hub_info, domain)
+        max_server_url = get_max_url_from_hub_domain(hub, domain)
         # We have a max url, let's check if its good
         try:
             client = cls(max_server_url, *args, **kwargs)

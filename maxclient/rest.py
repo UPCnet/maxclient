@@ -205,7 +205,10 @@ class MaxClient(BaseClient):
         # Otherwise construct it from kwargs, based on defaults (if any)
         else:
             query = RUDict(deepcopy(resource.defaults(method_name)))
-            query.update(expand(kwargs))
+            if self.expand_underscores:
+                query.update(expand(kwargs))
+            else:
+                query.update(kwargs)
 
         # Construct uri with optional query string
         uri = resource.uri

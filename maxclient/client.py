@@ -99,6 +99,7 @@ class BaseClient(object):
                  oauth_server=None,
                  actor=None,
                  auth_method='oauth2',
+                 expand_underscores=True,
                  scope=DEFAULT_SCOPE,
                  grant_type=DEFAULT_GRANT_TYPE,
                  client_id=DEFAULT_CLIENT_ID,
@@ -106,6 +107,7 @@ class BaseClient(object):
         """
         """
         # Strip ending slashes, as all routes begin with a slash
+        self.expand_underscores = expand_underscores
         self.url = url.rstrip('/')
         self.__oauth_server__ = oauth_server
         self.setActor(actor)

@@ -1,11 +1,15 @@
 CHANGELOG
 ==========
 
-4.0.8 (unreleased)
-------------------
+5.0 (2015-05-18)
+----------------
 
-- Nothing changed yet.
-
+* Update resources [Carles Bruguera]
+* Option to not expand underscore [Carles Bruguera]
+* Adapt base client to better subclassing [Carles Bruguera]
+* Adapt base client to better subclassing [Carles Bruguera]
+* Domain based instantiation [Carles Bruguera]
+* Allow subclassed clients to override routes and defaults [Carles Bruguera]
 
 4.0.7 (2015-04-14)
 ------------------

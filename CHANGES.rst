@@ -4,7 +4,6 @@ CHANGELOG
 5.1 (unreleased)
 ----------------
 
-- Nothing changed yet.
 
 
 5.0 (2015-05-18)

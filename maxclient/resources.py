@@ -83,3 +83,8 @@ RESOURCES['maintenance_conversations'] = dict(route='/admin/maintenance/conversa
 RESOURCES['maintenance_users'] = dict(route='/admin/maintenance/users', category='Management', name='Users Maintenance', actor_not_required=['POST'])
 RESOURCES['maintenance_exceptions'] = dict(route='/admin/maintenance/exceptions', category='Management', name='Error Exception list', actor_not_required=['GET'])
 RESOURCES['maintenance_exception'] = dict(route='/admin/maintenance/exceptions/{hash}', category='Management', name='Error Exception', actor_not_required=['GET'])
+
+
+# Deprecated routes
+RESOURCES['dep_user_subscriptions'] = dict(route='/people/{username}/subscriptions/{hash}', )
+RESOURCES['dep_user_device_token'] = dict(route='/people/{username}/device/{platform}/{token}')

@@ -1,11 +1,10 @@
 CHANGELOG
 ==========
 
-5.2 (unreleased)
-----------------
+5.2.1 (2015-10-29)
+------------------
 
-- Nothing changed yet.
-
+* Update route definitions [Carles Bruguera]
 
 5.1 (2015-06-17)
 ----------------

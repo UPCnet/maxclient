@@ -1,16 +1,15 @@
 CHANGELOG
 ==========
 
-5.2 (unreleased)
-----------------
+5.1.1 (2015-10-29)
+------------------
 
-- Nothing changed yet.
-
+* Update route definitions [Carles Bruguera]
 
 5.1 (2015-06-17)
 ----------------
 
-
+* Include deprecated resources for old max server [Carles Bruguera]
 
 5.0 (2015-05-18)
 ----------------

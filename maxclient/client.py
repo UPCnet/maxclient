@@ -154,11 +154,12 @@ class BaseClient(object):
         self.setActor(username)
         return self.getToken(username, password)
 
-    def getToken(self, username, password):
+    def getToken(self, username, password, bypass=False):
         # Set password to None if evaluates to False
         password = password if password else None
 
         payload = {"grant_type": self.grant_type,
+                   "bypass": bypass,
                    "client_id": self.client_id,
                    "scope": self.scope,
                    "username": username,
@@ -167,8 +168,8 @@ class BaseClient(object):
 
         req = requests.post('{0}/token'.format(self.oauth_server), data=payload, verify=False)
 
-        response = json.loads(req.text)
         if req.status_code == 200:
+            response = json.loads(req.text)
             token = response.get("access_token", None)
             if token:
                 self.setToken(token)

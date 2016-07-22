@@ -1,11 +1,10 @@
 CHANGELOG
 ==========
 
-5.1.2 (unreleased)
+5.1.2 (2016-07-22)
 ------------------
 
-- Nothing changed yet.
-
+* Solucionar get token restricted nou osirisjwt [Pilar Marinas]
 
 5.1.1 (2015-10-29)
 ------------------

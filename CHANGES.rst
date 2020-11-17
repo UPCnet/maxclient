@@ -1,11 +1,10 @@
 CHANGELOG
 ==========
 
-5.1.3 (unreleased)
+5.1.3 (2020-11-17)
 ------------------
 
-- Nothing changed yet.
-
+* Modificar notificaciones push para que los usuarios puedan decidir por comunidad si recibir o no las push [Pilar Marinas]
 
 5.1.2 (2016-07-22)
 ------------------
